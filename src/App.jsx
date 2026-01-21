@@ -8,14 +8,13 @@ import { ThemeProvider, StylesProvider } from "./providers";
 import "./index.css";
 
 function App() {
-  //useAuthState();
- // useGetProfile();
+  useAuthState();
+  useGetProfile();
 
   return (
     <div className="app">
       <StylesProvider />
       <ToastContainer />
-
       <ThemeProvider>
         <RouterProvider router={router} />
       </ThemeProvider>

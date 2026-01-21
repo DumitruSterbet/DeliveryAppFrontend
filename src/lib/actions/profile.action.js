@@ -2,17 +2,10 @@
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import useLocalStorage from "use-local-storage";
-import {
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-  updatePassword,
-  updateProfile,
-} from "@firebase/auth";
 
 import { useCurrentUser } from "@/lib/store";
-import { fbUpdateDoc, uploadImage, fbSnapshotDoc } from "@/lib/helpers";
+import { apiUpdateProfile, uploadImage, apiChangePassword } from "@/lib/helpers";
 import { useNotification } from "@/hooks";
-import { auth } from "@/configs";
 
 export const useGetProfile = () => {
   const [, setThemeLS] = useLocalStorage("groove-theme-config");
@@ -22,22 +15,16 @@ export const useGetProfile = () => {
   const { user } = currentUser || {};
 
   const [prof, setProf] = useState(null);
+  
   useEffect(() => {
-    const callback = (doc) => {
-      setProf(doc?.data());
-      setThemeLS(doc?.data()?.prefs);
-      setPlayerLS(doc?.data()?.player);
-      getUserProfile(doc?.data());
-    };
-
-    const unsub = fbSnapshotDoc({
-      collection: "users",
-      id: user?.uid,
-      callback,
-    });
-
-    return () => unsub;
-  }, [setPlayerLS, setThemeLS, user?.uid]);
+    // Get profile from localStorage user data
+    if (user) {
+      setProf(user);
+      if (user?.prefs) setThemeLS(user.prefs);
+      if (user?.player) setPlayerLS(user.player);
+      getUserProfile(user);
+    }
+  }, [user]);
 
   return prof;
 };
@@ -65,16 +52,19 @@ export const useUpdateProfile = () => {
             });
           }
 
-          await updateProfile(auth.currentUser, {
-            photoURL: profileImage,
-            displayName: values?.username,
+          await apiUpdateProfile({
+            username: values?.username,
+            imageUrl: profileImage,
           });
 
-          await fbUpdateDoc({
-            data: { username: values?.username, photoURL: profileImage },
-            collection: "users",
-            id: userId,
-          });
+          // Update localStorage user data
+          const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+          const updatedUser = {
+            ...storedUser,
+            username: values?.username,
+            imageUrl: profileImage,
+          };
+          localStorage.setItem("user", JSON.stringify(updatedUser));
 
           notify({
             title: "Success",
@@ -110,11 +100,12 @@ export const useUpdateAccountTheme = () => {
     mutationFn: async (prefs) => {
       if (userId) {
         try {
-          await fbUpdateDoc({
-            data: { prefs },
-            collection: "users",
-            id: userId,
-          });
+          await apiUpdateProfile({ prefs });
+          
+          // Update localStorage
+          const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+          storedUser.prefs = prefs;
+          localStorage.setItem("user", JSON.stringify(storedUser));
         } catch (err) {
           console.error("error", err);
         }
@@ -141,11 +132,12 @@ export const useUpdateAccountPlayer = () => {
     mutationFn: async (player) => {
       if (userId) {
         try {
-          await fbUpdateDoc({
-            data: { player: player },
-            collection: "users",
-            id: userId,
-          });
+          await apiUpdateProfile({ player });
+          
+          // Update localStorage
+          const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+          storedUser.player = player;
+          localStorage.setItem("user", JSON.stringify(storedUser));
         } catch (err) {
           console.error("error", err);
         }
@@ -172,12 +164,10 @@ export const useUpdatePassword = () => {
     mutationFn: async (values) => {
       if (userId) {
         try {
-          const credential = EmailAuthProvider.credential(
-            auth.currentUser.email,
-            values?.currentPassword
-          );
-          await reauthenticateWithCredential(auth?.currentUser, credential);
-          await updatePassword(auth?.currentUser, values?.newPassword);
+          await apiChangePassword({
+            currentPassword: values?.currentPassword,
+            newPassword: values?.newPassword,
+          });
 
           notify({
             title: "Success",
@@ -189,7 +179,7 @@ export const useUpdatePassword = () => {
           notify({
             title: "Error",
             variant: "error",
-            description: "An error occured!",
+            description: err?.response?.data?.message || "An error occured!",
           });
         }
       }

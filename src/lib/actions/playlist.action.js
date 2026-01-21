@@ -3,72 +3,38 @@
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { arrayRemove, arrayUnion, serverTimestamp } from "@firebase/firestore";
 
 import { useCurrentUser } from "@/lib/store";
 import { elementInArray } from "@/lib/utils";
 import {
-  fbSetDoc,
-  fbAddDoc,
-  fbGetDoc,
-  fbUpdateDoc,
-  fbDeleteDoc,
-  fbGetCollection,
-  fbCountCollection,
+  apiSaveRecentPlayed,
+  apiFetchRecentPlayed,
+  apiCreatePlaylist,
+  apiGetPlaylist,
+  apiUpdatePlaylist,
+  apiDeletePlaylist,
+  apiAddTrackToPlaylist,
+  apiRemoveTrackFromPlaylist,
+  apiFavoritePlaylists,
+  apiAddFavoritePlaylist,
+  apiRemoveFavoritePlaylist,
+  apiFetchMyPlaylists,
   uploadImage,
-  fbDeleteStorage,
 } from "@/lib/helpers";
 
 import { useNotification } from "@/hooks";
-import { auth } from "@/configs";
-
-import { fetchMultiplePlaylists } from "./editorial.action";
 
 // recent played
 export const useSaveRecentPlayed = () => {
-  const userId = auth?.currentUser?.uid;
-
   const queryClient = useQueryClient();
 
   const { mutate: saveRecentPlayed } = useMutation({
-    mutationFn: async (playlist) => {
-      if (userId) {
-        try {
-          const recentPlayedRef = await fbGetDoc({
-            collection: "recentPlayed",
-            id: userId,
-          });
-
-          if (recentPlayedRef.exists()) {
-            const { playlist_ids } = recentPlayedRef.data() || {};
-            const notInArray = elementInArray(playlist_ids, playlist);
-            if (!notInArray) {
-              const playlistIdsData = [playlist, ...playlist_ids].slice(0, 6);
-
-              await fbUpdateDoc({
-                collection: "recentPlayed",
-                id: userId,
-                data: {
-                  playlist_ids: playlistIdsData,
-                },
-              });
-            }
-          } else {
-            await fbSetDoc({
-              collection: "recentPlayed",
-              id: userId,
-              data: {
-                user_id: userId,
-                playlist_ids: arrayUnion(playlist),
-                created_at: serverTimestamp(),
-              },
-            });
-          }
-        } catch (error) {
-          // console.log(error);
-        }
-      } else {
-        throw new Error("invalid params");
+    mutationFn: async (playlistId) => {
+      try {
+        await apiSaveRecentPlayed(playlistId);
+      } catch (error) {
+        console.error("Error saving recent played:", error);
+        throw error;
       }
     },
     onSuccess: () => {
@@ -90,14 +56,8 @@ export const useFetchRecentPlayed = () => {
     queryFn: async () => {
       if (userId) {
         try {
-          const recentPlayedRef = await fbGetDoc({
-            collection: "recentPlayed",
-            id: userId,
-          });
-
-          if (recentPlayedRef.exists()) {
-            const data = recentPlayedRef.data().playlist_ids;
-            return await fetchMultiplePlaylists(data);
+          const response = await apiFetchRecentPlayed();
+          return response.data || [];
           } else {
             return null;
           }
@@ -123,27 +83,19 @@ export const useFetchMyPlaylists = () => {
   const navigate = useNavigate();
 
   const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
-    queryKey: ["myPlaylists", { userId, navigate }],
+    queryKey: ["myPlaylists", { userId }],
     queryFn: async () => {
       if (userId) {
         try {
-          const myPlaylistsRef = await fbGetCollection({
-            collection: "myPlaylists",
-            whereQueries: [["user_id", "==", userId]],
-            orderByQueries: [["created_at", "desc"]],
-          });
-
-          return myPlaylistsRef.docs.map((i) => {
-            const s = i.data();
-            return { ...s, id: i.id, created_at: s.created_at.toDate() };
-          });
+          const response = await apiFetchMyPlaylists();
+          return response.data || [];
         } catch (error) {
+          console.error("Error fetching playlists:", error);
           navigate("/");
-          // console.log(error);
+          return [];
         }
       } else {
         return null;
-        // throw new Error("invalid params");
       }
     },
   });
@@ -166,31 +118,19 @@ export const useCreateMyPlaylist = () => {
     mutationFn: async () => {
       if (userId) {
         try {
-          const countMyPlaylist = await fbCountCollection({
-            collection: "myPlaylists",
-            whereQueries: [["user_id", "==", userId]],
+          const response = await apiCreatePlaylist({
+            name: `My Playlist #${Date.now()}`,
+            description: "Here is an optional description",
+            imageUrl: null,
           });
 
-          const docRef = await fbAddDoc({
-            collection: "myPlaylists",
-            data: {
-              user_id: userId,
-              desc: "Here is an optional description",
-              title: `My Playlist #${countMyPlaylist + 1}`,
-              track_ids: [],
-              image_url: null,
-              created_at: serverTimestamp(),
-            },
-          });
-
-          navigate(`/my-playlist/${docRef.id}`);
+          navigate(`/my-playlist/${response.data.id}`);
         } catch (error) {
           notify({
             title: "Error",
             variant: "error",
-            description: "Request failed",
+            description: error?.response?.data?.message || "Failed to create playlist",
           });
-          // console.log(error);
         }
       } else {
         throw new Error("Invalid params");
@@ -219,34 +159,8 @@ export const useFetchMyPlaylist = (id) => {
     queryFn: async () => {
       if (userId) {
         try {
-          const singlePlaylist = await fbGetDoc({
-            collection: "myPlaylists",
-            id,
-          });
-
-          const { track_ids } = singlePlaylist.data() || {};
-
-          let playlistDetails = singlePlaylist.data();
-
-          playlistDetails = {
-            ...playlistDetails,
-            id: singlePlaylist.id,
-            created_at: playlistDetails.created_at.toDate(),
-          };
-
-          if (track_ids?.length) {
-            const tracks = await fetchMultiplePlaylists(track_ids);
-
-            return {
-              playlistDetails,
-              playlistTracks: tracks,
-            };
-          } else {
-            return {
-              playlistDetails,
-              playlistTracks: [],
-            };
-          }
+          const response = await apiGetPlaylist(id);
+          return response.data;
         } catch (error) {
           notify({
             title: "Error",
@@ -254,7 +168,6 @@ export const useFetchMyPlaylist = (id) => {
             description: "Request failed",
           });
           navigate("/");
-          // console.log(error);
         }
       } else {
         throw new Error("Invalid params");
@@ -283,25 +196,19 @@ export const useEditMyPlaylist = () => {
       if (userId) {
         try {
           let imageUrl = null;
-          let pathUrl = null;
-          if (files) {
-            pathUrl = imagePath || uuidv4();
 
+          if (files) {
             imageUrl = await uploadImage({
               imageFile: files[0],
-              storagePath: `myPlaylists/${pathUrl}`,
+              storagePath: `myPlaylists/${imagePath || uuidv4()}`,
               fileName: "image.jpg",
             });
           }
 
-          await fbUpdateDoc({
-            data: {
-              title,
-              desc,
-              ...(files ? { image_url: imageUrl, image_path: pathUrl } : {}),
-            },
-            collection: "myPlaylists",
-            id,
+          await apiUpdatePlaylist(id, {
+            name: title,
+            description: desc,
+            imageUrl: imageUrl,
           });
 
           notify({
@@ -347,20 +254,14 @@ export const useRemoveMyPlaylist = () => {
     mutationFn: async (id) => {
       if (userId) {
         try {
-          const playlist = await fbGetDoc({ collection: "myPlaylists", id });
-
-          const filePath = playlist?.data()?.image_path;
-          await fbDeleteDoc({ collection: "myPlaylists", id });
-          if (filePath) {
-            await fbDeleteStorage(`myPlaylists/${filePath}/image.jpg`);
-          }
+          await apiDeletePlaylist(id);
 
           navigate("/my-playlist");
 
           notify({
             title: "Success",
             variant: "success",
-            description: "Deleted from playlist",
+            description: "Playlist deleted",
           });
           return null;
         } catch (error) {
@@ -369,7 +270,6 @@ export const useRemoveMyPlaylist = () => {
             variant: "error",
             description: "An error occurred while deleting",
           });
-          // console.log(error);
         }
       } else {
         throw new Error("invalid error");
@@ -400,39 +300,19 @@ export const useAddTrackToMyPlaylist = () => {
     mutationFn: async ({ trackD, id, imageUrl }) => {
       if (userId) {
         try {
-          const addTrackRef = await fbGetDoc({
-            collection: "myPlaylists",
-            id,
+          await apiAddTrackToPlaylist(id, trackD);
+
+          notify({
+            title: "Success",
+            variant: "success",
+            description: "Added to playlist",
           });
-
-          if (addTrackRef.exists()) {
-            const { track_ids, image_url } = addTrackRef.data();
-            const notInArray = elementInArray(track_ids, trackD);
-
-            if (!notInArray) {
-              const trackIdsData = [trackD, ...track_ids].slice(0, 10);
-              await fbUpdateDoc({
-                data: {
-                  track_ids: trackIdsData,
-                  image_url: image_url || imageUrl,
-                },
-                collection: "myPlaylists",
-                id,
-              });
-              notify({
-                title: "Success",
-                variant: "success",
-                description: "Added to playlist",
-              });
-            }
-          }
         } catch (error) {
           notify({
             title: "Error",
             variant: "error",
             description: "An error occurred while adding",
           });
-          // console.log(error);
         }
       }
     },
@@ -462,13 +342,7 @@ export const useRemoveTrackFromMyPlaylist = () => {
       mutationFn: async ({ trackD, id }) => {
         if (userId) {
           try {
-            await fbUpdateDoc({
-              data: {
-                track_ids: arrayRemove(trackD),
-              },
-              collection: "myPlaylists",
-              id,
-            });
+            await apiRemoveTrackFromPlaylist(id, trackD);
 
             notify({
               title: "Success",
@@ -482,7 +356,6 @@ export const useRemoveTrackFromMyPlaylist = () => {
               variant: "error",
               description: "An error occurred while deleting",
             });
-            // console.log(error);
           }
         } else {
           throw new Error("Invalid params");
@@ -512,41 +385,10 @@ export const useSaveFavouritePlaylist = () => {
   const [notify] = useNotification();
 
   const { mutate: saveFavouritePlaylist } = useMutation({
-    mutationFn: async (playlist) => {
+    mutationFn: async (playlistId) => {
       if (userId) {
         try {
-          const favouritePlaylistsRef = await fbGetDoc({
-            collection: "favouritePlaylists",
-            id: userId,
-          });
-
-          if (favouritePlaylistsRef.exists()) {
-            const { playlist_ids } = favouritePlaylistsRef.data() || {};
-
-            const notInArray = elementInArray(playlist_ids, playlist);
-
-            if (!notInArray) {
-              const playlistIdsData = [playlist, ...playlist_ids].slice(0, 10);
-
-              await fbUpdateDoc({
-                collection: "favouritePlaylists",
-                id: userId,
-                data: {
-                  playlist_ids: playlistIdsData,
-                },
-              });
-            }
-          } else {
-            await fbSetDoc({
-              collection: "favouritePlaylists",
-              id: userId,
-              data: {
-                user_id: userId,
-                playlist_ids: arrayUnion(playlist),
-                created_at: serverTimestamp(),
-              },
-            });
-          }
+          await apiAddFavoritePlaylist(playlistId);
 
           notify({
             title: "Success",
@@ -554,7 +396,7 @@ export const useSaveFavouritePlaylist = () => {
             description: "Favourite playlist added",
           });
         } catch (error) {
-          // console.log(error);
+          console.error("Error adding favorite:", error);
         }
       }
     },
@@ -582,20 +424,11 @@ export const useFetchFavouritePlaylist = () => {
     queryFn: async () => {
       if (userId) {
         try {
-          const favPlaylistsRef = await fbGetDoc({
-            collection: "favouritePlaylists",
-            id: userId,
-          });
-
-          const { playlist_ids } = favPlaylistsRef?.data() || {};
-
-          if (favPlaylistsRef.exists() && playlist_ids?.length) {
-            return await fetchMultiplePlaylists(playlist_ids);
-          } else {
-            return null;
-          }
+          const response = await apiFavoritePlaylists();
+          return response.data || [];
         } catch (error) {
-          // console.log(error);
+          console.error("Error fetching favorites:", error);
+          return [];
         }
       } else {
         throw new Error("Invalid userId");
@@ -615,22 +448,12 @@ export const useListFavouritePlaylist = () => {
     queryFn: async () => {
       if (userId) {
         try {
-          const favPlaylistsRef = await fbGetDoc({
-            collection: "favouritePlaylists",
-            id: userId,
-          });
-
-          const id = favPlaylistsRef?.id;
-          const { playlist_ids } = favPlaylistsRef?.data() || {};
-
-          const favouriteplaylistList = playlist_ids?.reduce((acc, item) => {
-            acc.push(Object.keys(item)[0]);
-            return acc;
-          }, []);
-
-          return { favouriteplaylistList, favouriteplaylistId: id };
+          const response = await apiFavoritePlaylists();
+          const playlistIds = response.data?.map((p) => p.id) || [];
+          return { favouriteplaylistList: playlistIds };
         } catch (error) {
-          // console.log(error);
+          console.error("Error fetching favorite list:", error);
+          return { favouriteplaylistList: [] };
         }
       } else {
         throw new Error("Invalid userId");
@@ -650,17 +473,10 @@ export const useRemoveFavouritePlaylist = () => {
   const queryClient = useQueryClient();
 
   const { mutate: removeFavouritePlaylist } = useMutation({
-    mutationFn: async (params) => {
-      const { playlistD, id } = params;
+    mutationFn: async (playlistId) => {
       if (userId) {
         try {
-          await fbUpdateDoc({
-            data: {
-              playlist_ids: arrayRemove(playlistD),
-            },
-            collection: "favouritePlaylists",
-            id,
-          });
+          await apiRemoveFavoritePlaylist(playlistId);
 
           notify({
             title: "Success",
@@ -673,7 +489,6 @@ export const useRemoveFavouritePlaylist = () => {
             variant: "error",
             description: "An error occurred while deleting",
           });
-          // console.log(error)
         }
       }
     },

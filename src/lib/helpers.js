@@ -78,6 +78,318 @@ export const apiLogout = async () => {
 
 // ==================== END AUTH API HELPERS ====================
 
+// ==================== PLAYLIST API HELPERS ====================
+
+/**
+ * apiSaveRecentPlayed - POST /api/playlists/recent
+ * Save a playlist to recent played
+ */
+export const apiSaveRecentPlayed = async (playlistId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.post(
+      `${API_BASE}/playlists/recent`,
+      { playlistId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiFetchRecentPlayed - GET /api/playlists/recent
+ * Fetch user's recently played playlists
+ */
+export const apiFetchRecentPlayed = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_BASE}/playlists/recent`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiFetchMyPlaylists - GET /api/playlists/my
+ * Fetch all user's custom playlists
+ */
+export const apiFetchMyPlaylists = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_BASE}/playlists/my`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiCreatePlaylist - POST /api/playlists
+ * Create a new playlist
+ */
+export const apiCreatePlaylist = async ({ name, description, imageUrl }) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.post(
+      `${API_BASE}/playlists`,
+      { name, description, imageUrl },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiGetPlaylist - GET /api/playlists/:id
+ * Get a single playlist by ID
+ */
+export const apiGetPlaylist = async (playlistId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_BASE}/playlists/${playlistId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiUpdatePlaylist - PUT /api/playlists/:id
+ * Update a playlist
+ */
+export const apiUpdatePlaylist = async (playlistId, { name, description, imageUrl }) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.put(
+      `${API_BASE}/playlists/${playlistId}`,
+      { name, description, imageUrl },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiDeletePlaylist - DELETE /api/playlists/:id
+ * Delete a playlist
+ */
+export const apiDeletePlaylist = async (playlistId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.delete(`${API_BASE}/playlists/${playlistId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiAddTrackToPlaylist - POST /api/playlists/:id/tracks
+ * Add a track to a playlist
+ */
+export const apiAddTrackToPlaylist = async (playlistId, trackId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.post(
+      `${API_BASE}/playlists/${playlistId}/tracks`,
+      { trackId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiRemoveTrackFromPlaylist - DELETE /api/playlists/:id/tracks/:trackId
+ * Remove a track from a playlist
+ */
+export const apiRemoveTrackFromPlaylist = async (playlistId, trackId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.delete(
+      `${API_BASE}/playlists/${playlistId}/tracks/${trackId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiFavoritePlaylists - GET /api/playlists/favorites
+ * Get user's favorite playlists
+ */
+export const apiFavoritePlaylists = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_BASE}/playlists/favorites`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiAddFavoritePlaylist - POST /api/playlists/:id/favorite
+ * Add a playlist to favorites
+ */
+export const apiAddFavoritePlaylist = async (playlistId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.post(
+      `${API_BASE}/playlists/${playlistId}/favorite`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiRemoveFavoritePlaylist - DELETE /api/playlists/:id/favorite
+ * Remove a playlist from favorites
+ */
+export const apiRemoveFavoritePlaylist = async (playlistId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.delete(
+      `${API_BASE}/playlists/${playlistId}/favorite`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// ==================== END PLAYLIST API HELPERS ====================
+
+// ==================== PROFILE API HELPERS ====================
+
+/**
+ * apiGetProfile - GET /api/profile
+ * Get current user's profile
+ */
+export const apiGetProfile = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_BASE}/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiUpdateProfile - PUT /api/profile
+ * Update user profile
+ */
+export const apiUpdateProfile = async ({ username, imageUrl, prefs, player }) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.put(
+      `${API_BASE}/profile`,
+      { username, imageUrl, prefs, player },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiChangePassword - POST /api/profile/change-password
+ * Change user password
+ */
+export const apiChangePassword = async ({ currentPassword, newPassword }) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.post(
+      `${API_BASE}/profile/change-password`,
+      { currentPassword, newPassword },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// ==================== END PROFILE API HELPERS ====================
+
 export const uploadImage = async ({ imageFile, storagePath, fileName }) => {
   const compressImgOption = {
     maxSizeMB: 0.05,
