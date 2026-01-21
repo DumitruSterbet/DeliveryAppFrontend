@@ -1,5 +1,6 @@
 import axios from "axios";
 import imageCompression from "browser-image-compression";
+const API_BASE = "https://localhost:7227/api";
 import {
   collection as firebaseCollection,
   doc,
@@ -22,10 +23,60 @@ import {
   uploadBytes,
 } from "@firebase/storage";
 
-import { db, storage } from "@/configs";
+//import { db, storage } from "@/configs";
 
 const DEEZER_API_URL = import.meta.env.VITE_PUBLIC_DEEZER_API_URL;
 const CORS_URL = import.meta.env.VITE_PUBLIC_CORS_URL;
+
+// ==================== AUTH API HELPERS ====================
+
+/**
+ * apiRegister - POST /api/auth/register
+ * Creates a new user account
+ */
+export const apiRegister = async ({ email, password, username }) => {
+  try {
+    const response = await axios.post(`${API_BASE}/auth/register`, {
+      email,
+      password,
+      username,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiLogin - POST /api/auth/login
+ * Authenticates user and returns token
+ */
+export const apiLogin = async ({ email, password }) => {
+  try {
+    const response = await axios.post(`${API_BASE}/auth/login`, {
+      email,
+      password,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * apiLogout - POST /api/auth/logout
+ * Logs out the user
+ */
+export const apiLogout = async () => {
+  try {
+    const response = await axios.post(`${API_BASE}/auth/logout`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// ==================== END AUTH API HELPERS ====================
 
 export const uploadImage = async ({ imageFile, storagePath, fileName }) => {
   const compressImgOption = {
@@ -45,21 +96,45 @@ export const uploadImage = async ({ imageFile, storagePath, fileName }) => {
   return downloadURL;
 };
 
-export const fbAddDoc = async ({ data, collection }) =>
-  await addDoc(firebaseCollection(db, collection), data);
+export const fbAddDoc = async ({ data, collection }) => {
+  const response = await axios.post(`${API_BASE}/${collection}`, data);
+  return response.data;
+};
 
-export const fbSetDoc = async ({ data, id, collection }) =>
-  await setDoc(doc(db, collection, id), data);
+/**
+ * fbSetDoc → used for register
+ * Example:
+ * fbSetDoc({ collection: "auth/register", data })
+ */
+export const fbSetDoc = async ({ data, collection }) => {
+  const response = await axios.post(`${API_BASE}/${collection}`, data);
+  return response.data;
+};
 
-export const fbGetDoc = async ({ collection, id }) =>
-  await getDoc(doc(db, collection, id));
+/**
+ * fbGetDoc → GET /api/{collection}/{id}
+ */
+export const fbGetDoc = async ({ collection, id }) => {
+  console.log("dima1");
+  const response = await axios.get(`${API_BASE}/${collection}/${id}`);
+  return response.data;
+};
 
-export const fbUpdateDoc = async ({ data, collection, id }) =>
-  await updateDoc(doc(db, collection, id), data);
+/**
+ * fbUpdateDoc → PUT /api/{collection}/{id}
+ */
+export const fbUpdateDoc = async ({ data, collection, id }) => {
+  const response = await axios.put(`${API_BASE}/${collection}/${id}`, data);
+  return response.data;
+};
 
-export const fbDeleteDoc = async ({ collection, id }) =>
-  await deleteDoc(doc(db, collection, id));
-
+/**
+ * fbDeleteDoc → DELETE /api/{collection}/{id}
+ */
+export const fbDeleteDoc = async ({ collection, id }) => {
+  const response = await axios.delete(`${API_BASE}/${collection}/${id}`);
+  return response.data;
+};
 export const fbGetCollection = async ({
   collection,
   whereQueries = [],
@@ -107,6 +182,7 @@ const getBaseUrl = (endpoint) => {
 
 export const apiQuery = async ({ endpoint, config, method = "GET" }) => {
   try {
+    console.log("Test1 call");
     const options = {
       url: getBaseUrl(endpoint),
       method,

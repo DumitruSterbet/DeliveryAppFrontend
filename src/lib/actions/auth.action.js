@@ -2,23 +2,10 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  confirmPasswordReset,
-  createUserWithEmailAndPassword,
-  getRedirectResult,
-  onAuthStateChanged,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signInWithRedirect,
-  signOut,
-  updateProfile,
-  verifyPasswordResetCode,
-} from "@firebase/auth";
 
 import { useCurrentUser } from "@/lib/store";
-import { fbSetDoc } from "@/lib/helpers";
+import { apiLogin, apiRegister, apiLogout } from "@/lib/helpers";
 import { useNotification } from "@/hooks";
-import { auth, googleProvider, githubProvider } from "@/configs";
 
 export const useAuthState = () => {
   const {
@@ -28,48 +15,34 @@ export const useAuthState = () => {
   } = useCurrentUser();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const isPasswordEnabled = user?.providerData
-          .reduce((acc, item) => {
-            acc.push(item.providerId);
-            return acc;
-          }, [])
-          ?.includes("password");
-
-        const {
-          uid,
-          displayName: username,
-          email,
-          metadata,
-          photoURL: imageUrl,
-        } = user;
-
+    // Check if user is logged in from localStorage/session
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
         getCurrentUser({
-          userId: profile && uid,
+          userId: user?.id,
           user: {
             ...profile,
-            uid,
-            username,
-            email,
-            metadata,
-            imageUrl,
-            isPasswordEnabled,
+            ...user,
           },
           isLoading: false,
           isLoaded: true,
         });
-      } else {
+      } catch (error) {
         getCurrentUser({ isLoaded: true, isLoading: false });
         getUserProfile(null);
       }
-    });
-    return unsubscribe;
+    } else {
+      getCurrentUser({ isLoaded: true, isLoading: false });
+      getUserProfile(null);
+    }
   }, [getCurrentUser, profile]);
 };
 
 export const useLogin = () => {
   const [notify] = useNotification();
+  const { getCurrentUser } = useCurrentUser();
 
   const {
     mutate: login,
@@ -78,13 +51,34 @@ export const useLogin = () => {
   } = useMutation({
     mutationFn: async (values) => {
       try {
-        await signInWithEmailAndPassword(auth, values?.email, values?.password);
+        const response = await apiLogin({
+          email: values?.email,
+          password: values?.password,
+        });
+
+        // Store user data and token
+        localStorage.setItem("user", JSON.stringify(response.user));
+        localStorage.setItem("token", response.token);
+
+        // Update current user state
+        getCurrentUser({
+          userId: response.user?.id,
+          user: response.user,
+          isLoading: false,
+          isLoaded: true,
+        });
+
+        notify({
+          title: "Success",
+          variant: "success",
+          description: "Logged in successfully",
+        });
       } catch (err) {
-        console.error("error", err?.code);
+        console.error("error", err);
         notify({
           title: "Error",
           variant: "error",
-          description: err?.code,
+          description: err?.response?.data?.message || err?.message || "Login failed",
         });
       }
     },
@@ -95,6 +89,7 @@ export const useLogin = () => {
 
 export const useRegister = () => {
   const [notify] = useNotification();
+  const { getCurrentUser } = useCurrentUser();
 
   const {
     mutate: register,
@@ -103,32 +98,36 @@ export const useRegister = () => {
   } = useMutation({
     mutationFn: async (values) => {
       try {
-        const authResp = await createUserWithEmailAndPassword(
-          auth,
-          values.email,
-          values.password
-        );
-
-        await updateProfile(auth.currentUser, {
-          displayName: values.username,
+        const response = await apiRegister({
+          email: values.email,
+          password: values.password,
+          username: values.username,
         });
 
-        await fbSetDoc({
-          collection: "users",
-          id: authResp.user?.uid,
-          data: {
-            email: authResp.user.email,
-            username: values.username,
-            prefs: {},
-          },
+        // Store user data and token
+        localStorage.setItem("user", JSON.stringify(response.user));
+        localStorage.setItem("token", response.token);
+
+        // Update current user state
+        getCurrentUser({
+          userId: response.user?.id,
+          user: response.user,
+          isLoading: false,
+          isLoaded: true,
+        });
+
+        notify({
+          title: "Success",
+          variant: "success",
+          description: "Account created successfully",
         });
       } catch (err) {
-        console.error("error", err?.code);
+        console.error("error", err);
 
         notify({
           title: "Error",
           variant: "error",
-          description: err?.code || JSON.stringify(err),
+          description: err?.response?.data?.message || err?.message || "Registration failed",
         });
       }
     },
@@ -147,18 +146,20 @@ export const useSocialAuthSignUp = () => {
   } = useMutation({
     mutationFn: async (strategy) => {
       try {
+        // TODO: Implement OAuth endpoints when available in backend
+        // For now, redirect to your backend OAuth endpoints
         if (strategy === "oauth_google") {
-          await signInWithRedirect(auth, googleProvider);
+          window.location.href = "https://localhost:7227/api/auth/google";
         }
         if (strategy === "oauth_github") {
-          await signInWithRedirect(auth, githubProvider);
+          window.location.href = "https://localhost:7227/api/auth/github";
         }
       } catch (err) {
-        console.error("error", err, err?.code);
+        console.error("error", err);
         notify({
           title: "Error",
           variant: "error",
-          description: err?.code || JSON.stringify(err),
+          description: err?.message || "Social login failed",
         });
       }
     },
@@ -168,6 +169,9 @@ export const useSocialAuthSignUp = () => {
 };
 
 export const useSocialAuthSignUpRedirect = () => {
+  const { getCurrentUser } = useCurrentUser();
+  const [notify] = useNotification();
+
   const {
     mutate: socialAuthSignUpRedirect,
     isPending: isSubmitting,
@@ -175,30 +179,27 @@ export const useSocialAuthSignUpRedirect = () => {
   } = useMutation({
     mutationFn: async () => {
       try {
-        const result = await getRedirectResult(auth);
-
-        const user = result?.user;
-
-        if (user && result) {
-          const username = user?.displayName.split(" ")[0];
-
-          await updateProfile(auth.currentUser, {
-            displayName: username,
+        // TODO: Handle OAuth redirect response from backend
+        // Check localStorage or sessionStorage for OAuth user data
+        const oauthUser = localStorage.getItem("oauth_user");
+        if (oauthUser) {
+          const user = JSON.parse(oauthUser);
+          localStorage.setItem("user", JSON.stringify(user));
+          getCurrentUser({
+            userId: user?.id,
+            user,
+            isLoading: false,
+            isLoaded: true,
           });
-
-          await fbSetDoc({
-            collection: "users",
-            id: user?.uid,
-            data: {
-              email: user.email,
-              username: username,
-              photoURL: user.photoURL,
-              prefs: {},
-            },
-          });
+          localStorage.removeItem("oauth_user");
         }
       } catch (err) {
-        console.error("error", err, err?.code);
+        console.error("error", err);
+        notify({
+          title: "Error",
+          variant: "error",
+          description: "OAuth redirect failed",
+        });
       }
     },
   });
@@ -208,6 +209,7 @@ export const useSocialAuthSignUpRedirect = () => {
 
 export const useLogout = () => {
   const { getCurrentUser } = useCurrentUser();
+  const [notify] = useNotification();
 
   const {
     mutate: logout,
@@ -216,13 +218,29 @@ export const useLogout = () => {
   } = useMutation({
     mutationFn: async () => {
       try {
+        await apiLogout();
+        
+        // Clear stored user data and token
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+
         getCurrentUser({
           isLoaded: true,
           isLoading: false,
         });
-        await signOut(auth);
+
+        notify({
+          title: "Success",
+          variant: "success",
+          description: "Logged out successfully",
+        });
       } catch (err) {
-        // console.log(err);
+        console.error("Logout error:", err);
+        notify({
+          title: "Error",
+          variant: "error",
+          description: "Logout failed",
+        });
       }
     },
   });
