@@ -58,15 +58,12 @@ export const useFetchRecentPlayed = () => {
         try {
           const response = await apiFetchRecentPlayed();
           return response.data || [];
-          } else {
-            return null;
-          }
         } catch (error) {
-          // console.log(error);
+          console.error("Error fetching recent played:", error);
+          return [];
         }
       } else {
         return null;
-        // throw new Error("Invalid userId");
       }
     },
   });

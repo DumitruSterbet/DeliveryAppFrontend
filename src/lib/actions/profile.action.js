@@ -17,14 +17,13 @@ export const useGetProfile = () => {
   const [prof, setProf] = useState(null);
   
   useEffect(() => {
-    // Get profile from localStorage user data
-    if (user) {
+    // Get profile from localStorage user data only once when user ID changes
+    if (user?.id) {
       setProf(user);
       if (user?.prefs) setThemeLS(user.prefs);
       if (user?.player) setPlayerLS(user.player);
-      getUserProfile(user);
     }
-  }, [user]);
+  }, [user?.id, setThemeLS, setPlayerLS]); // Only depend on user ID, not the whole user object
 
   return prof;
 };
