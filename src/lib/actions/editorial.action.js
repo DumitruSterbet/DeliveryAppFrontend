@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { apiQuery } from "@/lib/helpers";
+import { apiFetchCategories, apiQuery } from "@/lib/helpers";
 
 export const useFetchTopCharts = (params) => {
   const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
@@ -82,10 +82,8 @@ export const useFetchGenres = () => {
     queryKey: ["genres"],
     queryFn: async () => {
       try {
-        const response = await apiQuery({
-          endpoint: `genre`,
-        });
-        return response?.data?.filter((item) => item.name !== "All");
+        const response = await apiFetchCategories();
+        return response?.filter((item) => item.name !== "All");
       } catch (error) {
         // console.log(error);
       }

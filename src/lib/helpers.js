@@ -28,6 +28,31 @@ import {
 const DEEZER_API_URL = import.meta.env.VITE_PUBLIC_DEEZER_API_URL;
 const CORS_URL = import.meta.env.VITE_PUBLIC_CORS_URL;
 
+// ==================== CATEGORY API HELPERS ====================
+
+/**
+ * apiFetchCategories - GET /api/categories
+ * Fetches music categories from the backend (replaces Deezer genres)
+ */
+export const apiFetchCategories = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_BASE}/categories`, {
+      headers: token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : undefined,
+    });
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// ==================== END CATEGORY API HELPERS ====================
+
 // ==================== AUTH API HELPERS ====================
 
 /**
