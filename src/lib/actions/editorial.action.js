@@ -40,7 +40,9 @@ export const useFetchNewReleases = ({ id }) => {
             endpoint: `editorial/${id}/releases`,
           });
 
-          return { ["releases"]: data };
+          // Wrap array response in data property if it's a direct array
+          const formattedData = Array.isArray(data) ? { data } : data;
+          return { ["releases"]: formattedData };
         } else {
           return null;
           // throw new Error("Invalid params");
@@ -100,7 +102,7 @@ export const useFetchGenreById = ({ id }) => {
       try {
         if (id) {
           const response = await apiQuery({
-            endpoint: `genre/${id}`,
+            endpoint: `api/categories/${id}`,
           });
           return response;
         } else {

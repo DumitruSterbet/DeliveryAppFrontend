@@ -514,6 +514,26 @@ export const fbCountCollection = async ({ collection, whereQueries }) => {
 };
 
 const getBaseUrl = (endpoint) => {
+  // Check if endpoint is for album - route to local API
+  const albumMatch = endpoint.match(/^album\/(.+)$/);
+  if (albumMatch) {
+    const storeId = albumMatch[1];
+    return `${API_BASE}/stores/${storeId}/menu`;
+  }
+  
+  // Check if endpoint is for editorial releases - route to local API
+  const releasesMatch = endpoint.match(/^editorial\/(.+)\/releases$/);
+  if (releasesMatch) {
+    const categoryId = releasesMatch[1];
+    return `${API_BASE}/stores/category/${categoryId}`;
+  }
+  
+  // Check if endpoint is for category by id - route to local API
+  const categoryMatch = endpoint.match(/^api\/categories\/(.+)$/);
+  if (categoryMatch) {
+    return `${API_BASE}/categories/${categoryMatch[1]}`;
+  }
+  
   return `${CORS_URL}/${DEEZER_API_URL}/${endpoint}`;
 };
 
@@ -527,7 +547,7 @@ export const apiQuery = async ({ endpoint, config, method = "GET" }) => {
     };
 
     const response = await axios(options);
-
+console.log(JSON.stringify(response.data));
     return response.data;
   } catch (error) {
     let err = error.response
@@ -554,7 +574,6 @@ export const dataFormatted = async (data) => {
             const valueMapped = value?.slice(0, size)?.map((valueItem) => {
               try {
                 const { tracklist } = valueItem;
-
                 if (tracklist) {
                   return {
                     ...valueItem,
