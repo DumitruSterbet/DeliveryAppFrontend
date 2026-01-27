@@ -29,7 +29,7 @@ export const useGetProfile = () => {
 };
 
 export const useUpdateProfile = () => {
-  const { currentUser } = useCurrentUser();
+  const { currentUser, getCurrentUser } = useCurrentUser();
   const { userId } = currentUser || {};
 
   const [notify] = useNotification();
@@ -47,7 +47,6 @@ export const useUpdateProfile = () => {
             profileImage = await uploadImage({
               imageFile: values?.files[0],
               storagePath: `users/${userId}`,
-              fileName: "avatar.jpg",
             });
           }
 
@@ -61,9 +60,17 @@ export const useUpdateProfile = () => {
           const updatedUser = {
             ...storedUser,
             username: values?.username,
-            imageUrl: profileImage,
+            imageUrl: profileImage || storedUser.imageUrl,
           };
           localStorage.setItem("user", JSON.stringify(updatedUser));
+
+          // Update currentUser state to reflect changes immediately
+          getCurrentUser({
+            userId: userId,
+            user: updatedUser,
+            isLoading: false,
+            isLoaded: true,
+          });
 
           notify({
             title: "Success",

@@ -161,6 +161,12 @@ function AppForm({
                   ref={imageRef}
                 />
 
+                {/* Hidden input to register imageUrl with react-hook-form */}
+                <input
+                  type="hidden"
+                  {...form(formItem.name)}
+                />
+
                 <ImageUploader
                   blobUrl={blob.blobUrl || defaultValues?.image}
                   onImageDelete={() => {}}

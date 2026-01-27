@@ -415,23 +415,69 @@ export const apiChangePassword = async ({ currentPassword, newPassword }) => {
 
 // ==================== END PROFILE API HELPERS ====================
 
+// ==================== UPLOAD API HELPERS ====================
+
+/**
+ * uploadImage - POST /api/upload/image
+ * Upload and compress an image to the backend
+ */
 export const uploadImage = async ({ imageFile, storagePath, fileName }) => {
-  const compressImgOption = {
-    maxSizeMB: 0.05,
-    maxWidthOrHeight: 1000,
-    useWebWorker: true,
-  };
+  try {
+    const compressImgOption = {
+      maxSizeMB: 0.05,
+      maxWidthOrHeight: 1000,
+      useWebWorker: true,
+    };
 
-  const compressedFile = await imageCompression(imageFile, compressImgOption);
+    const compressedFile = await imageCompression(imageFile, compressImgOption);
+    
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    
+    // Prioritize original filename, fallback to provided fileName, then 'image.jpg'
+    const finalFileName = imageFile.name || fileName || 'image.jpg';
+    console.log("Uploading image:", {
+      originalFileName: imageFile.name,
+      providedFileName: fileName,
+      finalFileName: finalFileName,
+      folder: storagePath
+    });
+    
+    formData.append("image", compressedFile, finalFileName);
+    formData.append("folder", storagePath || "uploads");
 
-  const storageRef = ref(
-    storage,
-    `${storagePath}/${fileName || compressedFile.name}`
-  );
-  const snapshot = await uploadBytes(storageRef, compressedFile);
-  const downloadURL = await getDownloadURL(snapshot.ref);
-  return downloadURL;
+    const response = await axios.post(`${API_BASE}/upload/image`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    console.log("Upload response:", JSON.stringify(response.data));
+
+    // Handle standardized response structure
+    if (response.data.Data && response.data.Data.url) {
+      return response.data.Data.url;
+    }
+    
+    // Fallback: if Data is the URL string directly
+    if (typeof response.data.Data === 'string') {
+      return response.data.Data;
+    }
+    
+    // Fallback: if response.data is the URL directly
+    if (typeof response.data === 'string') {
+      return response.data;
+    }
+
+    throw new Error("Invalid response format from upload endpoint");
+  } catch (error) {
+    console.error("Upload error:", error);
+    throw error;
+  }
 };
+
+// ==================== END UPLOAD API HELPERS ====================
 
 export const fbAddDoc = async ({ data, collection }) => {
   const response = await axios.post(`${API_BASE}/${collection}`, data);
