@@ -101,10 +101,14 @@ export const useUpdateAccountTheme = () => {
         try {
           await apiUpdateProfile({ prefs });
           
-          // Update localStorage
+          // Update localStorage user data
           const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
           storedUser.prefs = prefs;
           localStorage.setItem("user", JSON.stringify(storedUser));
+          
+          // Update theme localStorage to apply changes immediately
+          setThemeLS(prefs);
+          console.log("prefernces ", prefs);
         } catch (err) {
           console.error("error", err);
         }
@@ -133,10 +137,13 @@ export const useUpdateAccountPlayer = () => {
         try {
           await apiUpdateProfile({ player });
           
-          // Update localStorage
+          // Update localStorage user data
           const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
           storedUser.player = player;
           localStorage.setItem("user", JSON.stringify(storedUser));
+          
+          // Update player localStorage to apply changes immediately
+          setPlayerLS(player);
         } catch (err) {
           console.error("error", err);
         }
