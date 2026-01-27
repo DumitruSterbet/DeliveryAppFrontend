@@ -45,7 +45,7 @@ export const apiFetchCategories = async () => {
         : undefined,
     });
 
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -121,7 +121,7 @@ export const apiSaveRecentPlayed = async (playlistId) => {
         },
       }
     );
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -139,7 +139,7 @@ export const apiFetchRecentPlayed = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -157,7 +157,7 @@ export const apiFetchMyPlaylists = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -179,7 +179,7 @@ export const apiCreatePlaylist = async ({ name, description, imageUrl }) => {
         },
       }
     );
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -197,7 +197,7 @@ export const apiGetPlaylist = async (playlistId) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -219,7 +219,7 @@ export const apiUpdatePlaylist = async (playlistId, { name, description, imageUr
         },
       }
     );
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -237,7 +237,7 @@ export const apiDeletePlaylist = async (playlistId) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -259,7 +259,7 @@ export const apiAddTrackToPlaylist = async (playlistId, trackId) => {
         },
       }
     );
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -280,7 +280,7 @@ export const apiRemoveTrackFromPlaylist = async (playlistId, trackId) => {
         },
       }
     );
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -298,7 +298,7 @@ export const apiFavoritePlaylists = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -320,7 +320,7 @@ export const apiAddFavoritePlaylist = async (playlistId) => {
         },
       }
     );
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -341,7 +341,7 @@ export const apiRemoveFavoritePlaylist = async (playlistId) => {
         },
       }
     );
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -363,7 +363,7 @@ export const apiGetProfile = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -385,7 +385,7 @@ export const apiUpdateProfile = async ({ username, imageUrl, prefs, player }) =>
         },
       }
     );
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -407,7 +407,7 @@ export const apiChangePassword = async ({ currentPassword, newPassword }) => {
         },
       }
     );
-    return response.data;
+    return response.data.Data;
   } catch (error) {
     throw error;
   }
@@ -435,7 +435,7 @@ export const uploadImage = async ({ imageFile, storagePath, fileName }) => {
 
 export const fbAddDoc = async ({ data, collection }) => {
   const response = await axios.post(`${API_BASE}/${collection}`, data);
-  return response.data;
+  return response.data.Data;
 };
 
 /**
@@ -445,7 +445,7 @@ export const fbAddDoc = async ({ data, collection }) => {
  */
 export const fbSetDoc = async ({ data, collection }) => {
   const response = await axios.post(`${API_BASE}/${collection}`, data);
-  return response.data;
+  return response.data.Data;
 };
 
 /**
@@ -454,7 +454,7 @@ export const fbSetDoc = async ({ data, collection }) => {
 export const fbGetDoc = async ({ collection, id }) => {
   console.log("dima1");
   const response = await axios.get(`${API_BASE}/${collection}/${id}`);
-  return response.data;
+  return response.data.Data;
 };
 
 /**
@@ -462,7 +462,7 @@ export const fbGetDoc = async ({ collection, id }) => {
  */
 export const fbUpdateDoc = async ({ data, collection, id }) => {
   const response = await axios.put(`${API_BASE}/${collection}/${id}`, data);
-  return response.data;
+  return response.data.Data;
 };
 
 /**
@@ -470,7 +470,7 @@ export const fbUpdateDoc = async ({ data, collection, id }) => {
  */
 export const fbDeleteDoc = async ({ collection, id }) => {
   const response = await axios.delete(`${API_BASE}/${collection}/${id}`);
-  return response.data;
+  return response.data.Data;
 };
 export const fbGetCollection = async ({
   collection,
