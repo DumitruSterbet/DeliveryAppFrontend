@@ -540,14 +540,25 @@ const getBaseUrl = (endpoint) => {
 export const apiQuery = async ({ endpoint, config, method = "GET" }) => {
   try {
     console.log("Test1 call");
+    const baseUrl = getBaseUrl(endpoint);
     const options = {
-      url: getBaseUrl(endpoint),
+      url: baseUrl,
       method,
       ...config,
     };
 
     const response = await axios(options);
-console.log(JSON.stringify(response.data));
+    console.log(JSON.stringify(response.data));
+    
+    // Check if this is a local backend endpoint (standardized response)
+    const isLocalBackend = baseUrl.startsWith(API_BASE);
+    
+    // If local backend and has standardized response structure, extract Data
+    if (isLocalBackend && response.data && response.data.Data !== undefined) {
+      return response.data.Data;
+    }
+    
+    // Otherwise return the raw response (for external APIs like Deezer)
     return response.data;
   } catch (error) {
     let err = error.response
