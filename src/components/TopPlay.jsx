@@ -31,6 +31,7 @@ const TopPlay = () => {
       )}
     >
       <div className="w-full h-full bg-switch">
+        
         <div className="sticky top-0 p-4 rounded bg-switch xl:rounded-none">
           <div className="top_picks_content">
             <Sections.TrackSection

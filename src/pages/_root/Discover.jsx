@@ -6,16 +6,18 @@ import {
 import { Sections } from "@/components";
 
 export default function Discover() {
-  const {
+  /*const {
     data: recentPlayed,
     isPending: isRecentPlayedDataPending,
     isSuccess: isRecentPlayedDataSucsess,
   } = useFetchRecentPlayed();
-  const {
+  */
+ /* const {
     data: topChartData,
     isPending: isTopChartDataPending,
     isSuccess: isTopChartDataSuccess,
   } = useFetchTopCharts({ id: "0", section: "charts" });
+   */
 
   const {
     data: newReleases,
@@ -25,12 +27,13 @@ export default function Discover() {
     id: "0",
   });
 
-  const { playlists, artists, albums, podcasts } = topChartData || {};
+  //const { playlists, artists, albums, podcasts } = topChartData || {};
   const { releases } = newReleases || {};
 
   return (
     <section className="discover_page">
       <div className="flex flex-col gap-y-16">
+        {/*
         {recentPlayed && recentPlayed?.length ? (
           <div className="relative">
             <Sections.MediaSectionMinified
@@ -80,6 +83,7 @@ export default function Discover() {
           isLoading={isTopChartDataPending}
           isSuccess={isTopChartDataSuccess}
         />
+        */}
 
         <Sections.MediaSection
           data={releases?.data}
@@ -90,7 +94,7 @@ export default function Discover() {
           isLoading={isNewReleaseDataPending}
           isSuccess={isNewReleaseDataSuccess}
         />
-
+{/*
         <Sections.MediaSection
           data={podcasts?.data}
           title="Podcasts For You"
@@ -100,6 +104,7 @@ export default function Discover() {
           isLoading={isTopChartDataPending}
           isSuccess={isTopChartDataSuccess}
         />
+         */}
       </div>
     </section>
   );

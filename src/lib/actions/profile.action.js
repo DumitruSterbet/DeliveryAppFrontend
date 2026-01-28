@@ -111,11 +111,9 @@ export const useUpdateAccountTheme = () => {
           // Update localStorage user data
           const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
           storedUser.prefs = prefs;
-          localStorage.setItem("user", JSON.stringify(storedUser));
-          
+          localStorage.setItem("user", JSON.stringify(storedUser));       
           // Update theme localStorage to apply changes immediately
           setThemeLS(prefs);
-          console.log("prefernces ", prefs);
         } catch (err) {
           console.error("error", err);
         }

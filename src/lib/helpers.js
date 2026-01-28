@@ -560,6 +560,12 @@ export const fbCountCollection = async ({ collection, whereQueries }) => {
 };
 
 const getBaseUrl = (endpoint) => {
+  // Check if endpoint is for chart tracks - route to local API
+  const chartTracksMatch = endpoint.match(/^chart\/0\/tracks$/);
+  if (chartTracksMatch) {
+    return `${API_BASE}/products/top`;
+  }
+  
   // Check if endpoint is for album - route to local API
   const albumMatch = endpoint.match(/^album\/(.+)$/);
   if (albumMatch) {
@@ -594,14 +600,22 @@ export const apiQuery = async ({ endpoint, config, method = "GET" }) => {
     };
 
     const response = await axios(options);
-    console.log(JSON.stringify(response.data));
+    console.log("dima22",JSON.stringify(response.data));
     
     // Check if this is a local backend endpoint (standardized response)
     const isLocalBackend = baseUrl.startsWith(API_BASE);
     
     // If local backend and has standardized response structure, extract Data
     if (isLocalBackend && response.data && response.data.Data !== undefined) {
-      return response.data.Data;
+      console.log("dima33");
+      const extractedData = response.data.Data;
+      
+      // If Data is an array, wrap it in a data property for consistency
+      if (Array.isArray(extractedData)) {
+        return { data: extractedData };
+      }
+      
+      return extractedData;
     }
     
     // Otherwise return the raw response (for external APIs like Deezer)

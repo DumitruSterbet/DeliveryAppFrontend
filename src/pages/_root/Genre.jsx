@@ -14,7 +14,7 @@ export default function Genre({ id }) {
     isPending: genreDataPending,
   } = useFetchGenreById({ id });
 
- /* const {
+  const {
     data: playlists,
     isPending: playlistsDataPending,
     isSuccess: playlistsDataSuccess,
@@ -30,15 +30,15 @@ export default function Genre({ id }) {
   } = useFetchChartBySection({
     id,
     section: "artists",
-  }); */
+  });
 
-  /*const {
+  const {
     data: topSelection,
     isPending: topSelectionDataPending,
     isSuccess: topSelectionDataSuccess,
   } = useFetchTopSelection({
     id,
-  });*/
+  });
 
   const {
     data: newReleases,
@@ -48,7 +48,7 @@ export default function Genre({ id }) {
     id,
   });
 
-  /*const {
+  const {
     data: radios,
     isPending: radiosDataPending,
     isSuccess: radiosDataSuccess,
@@ -56,9 +56,9 @@ export default function Genre({ id }) {
     id,
     section: "radios",
   });
-  */
+  
   const { releases } = newReleases || {};
-  //const { selection } = topSelection || {};
+  const { selection } = topSelection || {};
 
   const genreName = genre?.name;
 
@@ -67,7 +67,7 @@ export default function Genre({ id }) {
   return (
     <section className="genre_section">
       <div className="relative z-20 flex flex-col gap-10">
-      {/*  <Sections.MediaSection
+      {  <Sections.MediaSection
           data={playlists?.data}
           title={`Trending Now in ${genreName}`}
           titleType="large"
@@ -77,7 +77,7 @@ export default function Genre({ id }) {
           gridNumber={gridNumber}
           isLoading={playlistsDataPending && genreDataPending}
           isSuccess={playlistsDataSuccess && genreDataSuccess}
-        /> */}
+        /> }
 
         <Sections.MediaSection
           data={releases?.data}
@@ -90,7 +90,7 @@ export default function Genre({ id }) {
           isLoading={releasesDataPending && genreDataPending}
           isSuccess={releasesDataSuccess && genreDataSuccess}
         /> 
-    {/*  
+     
         <Sections.MediaSection
           data={selection?.data}
           title={`Editor's Picks in ${genreName}`}
@@ -127,7 +127,7 @@ export default function Genre({ id }) {
           isLoading={radiosDataPending && genreDataPending}
           isSuccess={radiosDataSuccess && genreDataSuccess}
         />
-        */}
+        
       </div>
     </section>
   );

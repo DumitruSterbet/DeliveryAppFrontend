@@ -88,7 +88,7 @@ export const useFetchMyPlaylists = () => {
           return response.data || [];
         } catch (error) {
           console.error("Error fetching playlists:", error);
-          navigate("/");
+         // navigate("/");
           return [];
         }
       } else {

@@ -39,10 +39,13 @@ export const useFetchNewReleases = ({ id }) => {
           const data = await apiQuery({
             endpoint: `editorial/${id}/releases`,
           });
+         
 
           // Wrap array response in data property if it's a direct array
           const formattedData = Array.isArray(data) ? { data } : data;
+         console.log("dimwa");
           return { ["releases"]: formattedData };
+           
         } else {
           return null;
           // throw new Error("Invalid params");
@@ -193,7 +196,7 @@ export const useFetchChartBySection = ({ id, section }) => {
           const response = await apiQuery({
             endpoint: `chart/${id}/${section}`,
           });
-
+console.log("dima12212",response);
           return response;
         } else {
           return null;
@@ -216,7 +219,7 @@ export const useFetchPlaylists = ({ id, section }) => {
           const response = await apiQuery({
             endpoint: `${section}/${id}`,
           });
-
+ console.log("dima",response);
           return response;
         } else {
           return null;
@@ -259,7 +262,7 @@ export const useFetchTracks = () => {
   const { mutate: fetchTracks, isPending: isSubmitting } = useMutation({
     mutationFn: async (params) => {
       const { id, type, callback } = params || {};
-
+console.log("dima11"); 
       if (id && type) {
         try {
           setGetId(id);

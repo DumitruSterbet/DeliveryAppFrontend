@@ -15,8 +15,8 @@ export default function Playlist() {
     isSuccess: playlistDataSuccess,
   } = useFetchPlaylists({ id, section });
 
-  const { tracks } = playlists || {};
-
+  const { products } = playlists || {};
+ console.log("playlistData",playlists);
   if (!section || !id || !allowedSection.includes(section)) {
     return <Navigate to="/discover" replace />;
   }
@@ -25,7 +25,7 @@ export default function Playlist() {
     <section className="playlist_section">
       <Sections.BannerSection
         details={playlists}
-        tracks={tracks?.data}
+        tracks={products}
         isLoading={playlistDataPending}
         isSuccess={playlistDataSuccess}
         showPattern
@@ -33,7 +33,7 @@ export default function Playlist() {
 
       <div className="relative mt-8">
         <Sections.TrackSection
-          data={tracks?.data && tracks?.data}
+          data={products && products}
           details={{
             id: playlists?.id,
             type: playlists?.type,
