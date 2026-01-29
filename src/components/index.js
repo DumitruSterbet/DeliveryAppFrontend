@@ -1,7 +1,7 @@
 export { default as SearchModal } from "./SearchModal";
 
 export { default as Modal } from "./Modal";
-export { default as Form } from "./Form";
+export { default as Form, Input as FormInput, Textarea as FormTextarea } from "./Form";
 export { default as ImageUploader } from "./ImageUploader";
 export { default as Overlay } from "./Overlay";
 export { default as PatternBg } from "./PatternBg";

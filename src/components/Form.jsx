@@ -195,4 +195,40 @@ function AppForm({
   );
 }
 
+// Standalone Input component for use outside of AppForm
+export const Input = ({ label, error, className = "", ...props }) => {
+  return (
+    <div className="w-full">
+      {label && (
+        <label className="block mb-2 text-sm font-medium text-onNeutralBg">
+          {label}
+        </label>
+      )}
+      <input
+        className={`w-full px-4 py-3 rounded outline-none bg-sidebar text-onNeutralBg border border-divider focus:border-primary ${className}`}
+        {...props}
+      />
+      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+    </div>
+  );
+};
+
+// Standalone Textarea component for use outside of AppForm
+export const Textarea = ({ label, error, className = "", ...props }) => {
+  return (
+    <div className="w-full">
+      {label && (
+        <label className="block mb-2 text-sm font-medium text-onNeutralBg">
+          {label}
+        </label>
+      )}
+      <textarea
+        className={`w-full px-4 py-3 rounded outline-none bg-sidebar text-onNeutralBg border border-divider focus:border-primary resize-vertical ${className}`}
+        {...props}
+      />
+      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+    </div>
+  );
+};
+
 export default AppForm;

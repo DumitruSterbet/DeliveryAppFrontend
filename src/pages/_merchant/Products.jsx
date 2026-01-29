@@ -1,12 +1,14 @@
 import { useMemo } from "react";
 import { Navigate } from "react-router-dom";
 
-import { useCurrentUser } from "@/lib/store";
+import { useCurrentUser, useAppModal } from "@/lib/store";
 import { IconButton, Sections } from "@/components";
+import AddProductModal from "@/components/modals/AddProductModal";
 
 export default function Products() {
   const { currentUser } = useCurrentUser();
   const { user, isLoaded } = currentUser || {};
+  const { open: openModal, getModalContent } = useAppModal();
 
   // TODO: Replace with actual API call when backend is ready
   // const { data: products, isPending, isSuccess } = useFetchMerchantProducts();
@@ -154,8 +156,8 @@ export default function Products() {
   }, []);
 
   const handleCreateProduct = () => {
-    // TODO: Implement create product logic
-    console.log("Create new product");
+    openModal();
+    getModalContent(<AddProductModal />);
   };
 
   return (
