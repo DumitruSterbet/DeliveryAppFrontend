@@ -20,6 +20,9 @@ export default function Playlist() {
     return <Navigate to="/discover" replace />;
   }
 
+  // Check if it's an album section to show grid view
+  const isAlbum = section === "album";
+
   return (
     <section className="playlist_section">
       <Sections.BannerSection
@@ -31,17 +34,31 @@ export default function Playlist() {
       />
 
       <div className="relative mt-8">
-        <Sections.TrackSection
-          data={products && products}
-          details={{
-            id: playlists?.id,
-            type: playlists?.type,
-          }}
-          disableRowList={["dateCreated"]}
-          skeletonItemNumber={20}
-          isLoading={playlistDataPending}
-          isSuccess={playlistDataSuccess}
-        />
+        {isAlbum ? (
+          <Sections.MediaSectionMinified
+            data={products}
+            title="Products"
+            titleType="large"
+            type="product"
+            gridNumber={4}
+            imageDims={28}
+            isLoading={playlistDataPending}
+            isSuccess={playlistDataSuccess}
+            noDataText="No products available in this album."
+          />
+        ) : (
+          <Sections.TrackSection
+            data={products && products}
+            details={{
+              id: playlists?.id,
+              type: playlists?.type,
+            }}
+            disableRowList={["dateCreated"]}
+            skeletonItemNumber={20}
+            isLoading={playlistDataPending}
+            isSuccess={playlistDataSuccess}
+          />
+        )}
       </div>
     </section>
   );
