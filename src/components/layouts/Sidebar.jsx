@@ -93,69 +93,177 @@ const Sidebar = () => {
     getToggleMenu && getToggleMenu(false);
   }, [pathname]);
 
+  const getMenuLinks = () => {
+    const userRole = user?.role;
+
+    // Merchant navigation
+    if (userRole === "Merchant") {
+      return [
+        {
+          id: "dashboard",
+          name: "Dashboard",
+          to: "/merchant/dashboard",
+          icon: "BiPlayCircle",
+          tooltip: "hover",
+        },
+        {
+          id: "products",
+          name: "Products",
+          to: "/merchant/products",
+          icon: "RiListIndefinite",
+          tooltip: "hover",
+        },
+        {
+          id: "orders",
+          name: "Orders",
+          to: "/merchant/orders",
+          icon: "FaSearchengin",
+          tooltip: "hover",
+        },
+      ];
+    }
+
+    // Courier navigation
+    if (userRole === "Courier") {
+      return [
+        {
+          id: "deliveries",
+          name: "Deliveries",
+          to: "/courier/deliveries",
+          icon: "BiPlayCircle",
+          tooltip: "hover",
+        },
+        {
+          id: "schedule",
+          name: "Schedule",
+          to: "/courier/schedule",
+          icon: "RiListIndefinite",
+          tooltip: "hover",
+        },
+        {
+          id: "history",
+          name: "History",
+          to: "/courier/history",
+          icon: "FaSearchengin",
+          tooltip: "hover",
+        },
+      ];
+    }
+
+    // Admin navigation
+    if (userRole === "Admin") {
+      return [
+        {
+          id: "admin_dashboard",
+          name: "Admin Dashboard",
+          to: "/admin/dashboard",
+          icon: "BiPlayCircle",
+          tooltip: "hover",
+        },
+        {
+          id: "users",
+          name: "Users",
+          to: "/admin/users",
+          icon: "RiListIndefinite",
+          tooltip: "hover",
+        },
+        {
+          id: "analytics",
+          name: "Analytics",
+          to: "/admin/analytics",
+          icon: "FaSearchengin",
+          tooltip: "hover",
+        },
+      ];
+    }
+
+    // Customer (User) or Not Logged In - Default navigation
+    return [
+      {
+        id: "discover",
+        name: "Discover",
+        to: "/discover",
+        icon: "BiPlayCircle",
+        tooltip: "hover",
+      },
+      {
+        id: "browse",
+        name: "Browse",
+        to: "/browse",
+        icon: "RiListIndefinite",
+        tooltip: "hover",
+      },
+      {
+        id: "search",
+        name: "Search",
+        to: "/search",
+        icon: "FaSearchengin",
+        refFocus: searchRef,
+        tooltip: "hover",
+      },
+    ];
+  };
+
+  const getLibraryLinks = () => {
+    const userRole = user?.role;
+
+    // Customer (User) - has library features
+    if (user && (userRole === "Customer" || !userRole)) {
+      return [
+        {
+          id: "favourite_playlists",
+          name: "Favourite Playlists",
+          to: "/favourite-playlists",
+          icon: "GiLoveSong",
+          tooltip: "hover",
+        },
+        {
+          id: "my_playlists",
+          name: "My Playlists",
+          to: "/my-playlist",
+          icon: "PiPlaylistBold",
+          tooltip: "hover",
+        },
+      ];
+    }
+
+    // Not logged in - show create playlist prompt
+    if (!user) {
+      return [
+        {
+          id: "create_playlists",
+          name: "Create Playlists",
+          icon: "PiPlaylistBold",
+          dialog: true,
+          tooltip: "click",
+          tooltipContent: CreatePlaylistTooltipContent,
+          arrowPos: "left-top",
+          arrowClassName: "text-card",
+        },
+      ];
+    }
+
+    // Other roles (Merchant, Courier, Admin) - no library section
+    return [];
+  };
+
   const navlinks = useMemo(() => {
+    const menuLinks = getMenuLinks();
+    const libraryLinks = getLibraryLinks();
+
     return [
       {
         name: "Menu",
-        subLinks: [
-          {
-            id: "discover",
-            name: "Discover",
-            to: "/discover",
-            icon: "BiPlayCircle",
-            tooltip: "hover",
-          },
-          {
-            id: "browse",
-            name: "Browse",
-            to: "/browse",
-            icon: "RiListIndefinite",
-            tooltip: "hover",
-          },
-          {
-            id: "search",
-            name: "Search",
-            to: "/search",
-            icon: "FaSearchengin",
-            refFocus: searchRef,
-            tooltip: "hover",
-          },
-        ],
+        subLinks: menuLinks,
       },
-      {
-        name: "Library",
-        subLinks: [
-          ...(user
-            ? [
-                {
-                  id: "favourite_playlists",
-                  name: "Favourite Playlists",
-                  to: "/favourite-playlists",
-                  icon: "GiLoveSong",
-                  tooltip: "hover",
-                },
-                {
-                  id: "my_playlists",
-                  name: "My Playlists",
-                  to: "/my-playlist",
-                  icon: "PiPlaylistBold",
-                  tooltip: "hover",
-                },
-              ]
-            : [
-                {
-                  id: "create_playlists",
-                  name: "Create Playlists",
-                  icon: "PiPlaylistBold",
-                  dialog: true,
-                  tooltip: "click",
-                  tooltipContent: CreatePlaylistTooltipContent,
-                  arrowPos: "left-top",
-                  arrowClassName: "text-card",
-                },
-              ]),
-        ],
-      },
+      ...(libraryLinks.length > 0
+        ? [
+            {
+              name: "Library",
+              subLinks: libraryLinks,
+            },
+          ]
+        : []),
       {
         name: "Account",
         subLinks: [
