@@ -123,11 +123,6 @@ export default function AddProductModal() {
         </div>
 
         <div className="flex gap-4 pt-4">
-          error={errors.imageUrl?.message}
-          {...register("imageUrl")}
-        />
-
-        <div className="flex gap-4 pt-4">
           <Button
             type="button"
             label="Cancel"
