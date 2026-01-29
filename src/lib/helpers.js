@@ -586,6 +586,12 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/categories/${categoryMatch[1]}`;
   }
   
+  // Check if endpoint is for search - route to local API
+  const searchMatch = endpoint.match(/^search\/(products|stores)\?q=(.+)$/);
+  if (searchMatch) {
+    return `${API_BASE}/${endpoint}`;
+  }
+  
   return `${CORS_URL}/${DEEZER_API_URL}/${endpoint}`;
 };
 

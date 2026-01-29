@@ -299,12 +299,12 @@ export const useFetchSearch = ({ searchText }) => {
       if (searchText?.trim()) {
         const [tracks, albums, artists, playlists, radios] = await Promise.all([
           apiQuery({
-            endpoint: `search/track?q=${searchText}${limit}`,
+            endpoint: `search/products?q=${searchText}${limit}`,
           }),
           apiQuery({
-            endpoint: `search/album?q=${searchText}${limit}`,
+            endpoint: `search/stores?q=${searchText}${limit}`,
           }),
-          apiQuery({
+          /*apiQuery({
             endpoint: `search/artist?q=${searchText}${limit}`,
           }),
           apiQuery({
@@ -312,7 +312,7 @@ export const useFetchSearch = ({ searchText }) => {
           }),
           apiQuery({
             endpoint: `search/radio?q=${searchText}${limit}`,
-          }),
+          }), */
         ]);
 
         return {
