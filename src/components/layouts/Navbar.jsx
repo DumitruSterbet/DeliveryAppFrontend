@@ -403,6 +403,7 @@ export default function Navbar() {
   const isFolded = sidebar === "folded";
 
   const { isLoaded, user } = currentUser || {};
+  console.log("User navbar",user);
 
   return (
     <nav className="fixed z-[1200] h-navbar top-0 bg-neutralBgOpacity backdrop-blur-[50px] sidebar_horizontal_width">

@@ -16,7 +16,6 @@ export default function Playlist() {
   } = useFetchPlaylists({ id, section });
 
   const { products } = playlists || {};
- console.log("playlistData",playlists);
   if (!section || !id || !allowedSection.includes(section)) {
     return <Navigate to="/discover" replace />;
   }

@@ -102,6 +102,7 @@ export const useRegister = () => {
           email: values.email,
           password: values.password,
           username: values.username,
+          role: values.role,
         });
 
         // Store user data and token

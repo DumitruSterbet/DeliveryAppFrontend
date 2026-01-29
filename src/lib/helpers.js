@@ -59,12 +59,13 @@ export const apiFetchCategories = async () => {
  * apiRegister - POST /api/auth/register
  * Creates a new user account
  */
-export const apiRegister = async ({ email, password, username }) => {
+export const apiRegister = async ({ email, password, username, role }) => {
   try {
     const response = await axios.post(`${API_BASE}/auth/register`, {
       email,
       password,
       username,
+      role
     });
     return response.data;
   } catch (error) {
@@ -436,12 +437,6 @@ export const uploadImage = async ({ imageFile, storagePath, fileName }) => {
     
     // Prioritize original filename, fallback to provided fileName, then 'image.jpg'
     const finalFileName = imageFile.name || fileName || 'image.jpg';
-    console.log("Uploading image:", {
-      originalFileName: imageFile.name,
-      providedFileName: fileName,
-      finalFileName: finalFileName,
-      folder: storagePath
-    });
     
     formData.append("image", compressedFile, finalFileName);
     formData.append("folder", storagePath || "uploads");
@@ -453,7 +448,6 @@ export const uploadImage = async ({ imageFile, storagePath, fileName }) => {
       },
     });
 
-    console.log("Upload response:", JSON.stringify(response.data));
 
     // Handle standardized response structure
     if (response.data.Data && response.data.Data.url) {
@@ -498,7 +492,6 @@ export const fbSetDoc = async ({ data, collection }) => {
  * fbGetDoc → GET /api/{collection}/{id}
  */
 export const fbGetDoc = async ({ collection, id }) => {
-  console.log("dima1");
   const response = await axios.get(`${API_BASE}/${collection}/${id}`);
   return response.data.Data;
 };
@@ -597,7 +590,6 @@ const getBaseUrl = (endpoint) => {
 
 export const apiQuery = async ({ endpoint, config, method = "GET" }) => {
   try {
-    console.log("Test1 call");
     const baseUrl = getBaseUrl(endpoint);
     const options = {
       url: baseUrl,
@@ -606,14 +598,12 @@ export const apiQuery = async ({ endpoint, config, method = "GET" }) => {
     };
 
     const response = await axios(options);
-    console.log("dima22",JSON.stringify(response.data));
     
     // Check if this is a local backend endpoint (standardized response)
     const isLocalBackend = baseUrl.startsWith(API_BASE);
     
     // If local backend and has standardized response structure, extract Data
     if (isLocalBackend && response.data && response.data.Data !== undefined) {
-      console.log("dima33");
       const extractedData = response.data.Data;
       
       // If Data is an array, wrap it in a data property for consistency

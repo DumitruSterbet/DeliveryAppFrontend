@@ -40,6 +40,15 @@ export default function Register() {
         label: "Password",
         props: { type: "password", placeholder: "" },
       },
+      {
+        type: "input",
+        name: "role",
+        label: "Role",
+        props: {
+          type: "text",
+          placeholder: "Ex customer",
+        },
+      },
     ];
   }, []);
 
