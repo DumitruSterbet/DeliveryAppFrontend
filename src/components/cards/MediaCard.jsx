@@ -10,7 +10,7 @@ import { Icon, MetaDetailsMediaCard } from "@/components";
 
 export default function MediaCard({ item, type }) {
   const navigate = useNavigate();
-
+ console.log("MediaCard item",item);
   const { playlistId, playlistType } = usePlayerStore();
 
   const { fetchTracks, isSubmitting, getId } = useFetchTracks();

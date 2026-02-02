@@ -82,6 +82,31 @@ export const useFetchTopSelection = ({ id }) => {
   return { isPending, isSuccess, isError, isFetching, error, data };
 };
 
+export const useFetchTopProductsByCategory = ({ id }) => {
+  const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
+    queryKey: [`topProductsByCategory_${id}`, { id }],
+    queryFn: async () => {
+      try {
+        if (id) {
+          const data = await apiQuery({
+            endpoint: `top/category/${id}`,
+          });
+
+          // Wrap array response in data property if it's a direct array
+          const formattedData = Array.isArray(data) ? { data } : data;
+          return { ["topProducts"]: formattedData };
+        } else {
+          return null;
+        }
+      } catch (error) {
+        // console.log(error);
+      }
+    },
+  });
+
+  return { isPending, isSuccess, isError, isFetching, error, data };
+};
+
 export const useFetchGenres = () => {
   const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
     queryKey: ["genres"],
@@ -262,7 +287,6 @@ export const useFetchTracks = () => {
   const { mutate: fetchTracks, isPending: isSubmitting } = useMutation({
     mutationFn: async (params) => {
       const { id, type, callback } = params || {};
-console.log("dima11"); 
       if (id && type) {
         try {
           setGetId(id);

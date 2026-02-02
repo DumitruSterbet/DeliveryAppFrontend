@@ -2,6 +2,7 @@ export {
   useFetchTopCharts,
   useFetchNewReleases,
   useFetchTopSelection,
+  useFetchTopProductsByCategory,
   useFetchChartBySection,
   useFetchArtist,
   useFetchGenres,
