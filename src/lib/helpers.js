@@ -553,6 +553,12 @@ export const fbCountCollection = async ({ collection, whereQueries }) => {
 };
 
 const getBaseUrl = (endpoint) => {
+  // Check if endpoint is for products (POST/GET) - route to local API
+  const productsMatch = endpoint.match(/^api\/products$/);
+  if (productsMatch) {
+    return `${API_BASE}/products`;
+  }
+
   // Check if endpoint is for merchant menu - route to local API
   const merchantMenuMatch = endpoint.match(/^api\/stores\/merchant\/(.+)\/menu$/);
   if (merchantMenuMatch) {

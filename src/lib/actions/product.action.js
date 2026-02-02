@@ -5,32 +5,29 @@ import { useCurrentUser } from "@/lib/store";
 import { useNotification } from "@/hooks";
 import { apiQuery } from "@/lib/helpers";
 
-// TODO: Replace these with actual API calls when backend is ready
-const apiCreateProduct = async ({ name, description, price, stock, imageFile, category }) => {
-  // Mock API call
-  // In production, you would upload the image first and get the URL
-  // const imageUrl = imageFile ? await uploadImage(imageFile) : null;
-  
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        data: {
-          id: Date.now(),
-          name,
-          description,
-          price,
-          stock,
-          imageUrl: imageFile ? URL.createObjectURL(imageFile) : "https://via.placeholder.com/300",
-          category,
-        }
-      });
-    }, 1000);
+const apiCreateProduct = async ({ name, description, price, imageUrl, storeId, categoryIds }) => {
+  // Call the real API endpoint
+  const response = await apiQuery({
+    endpoint: 'api/products',
+    method: 'POST',
+    config: {
+      data: {
+        name,
+        description,
+        price: parseFloat(price),
+        imageUrl: imageUrl || null,
+        storeId,
+        categoryIds: categoryIds || [],
+      },
+    },
   });
+  
+  return response;
 };
 
 export const useCreateProduct = () => {
   const { currentUser } = useCurrentUser();
-  const { userId } = currentUser || {};
+  const { userId, user } = currentUser || {};
 
   const navigate = useNavigate();
   const [notify] = useNotification();
@@ -39,34 +36,52 @@ export const useCreateProduct = () => {
 
   const { mutate: createProduct, isPending: isCreating } = useMutation({
     mutationFn: async (productData) => {
-      if (userId) {
-        try {
-          const response = await apiCreateProduct(productData);
-          
-          notify({
-            title: "Success",
-            variant: "success",
-            description: "Product created successfully",
-          });
-
-          // Navigate to the product detail page
-          navigate(`/merchant/products/${response.data.id}`);
-          
-          return response;
-        } catch (error) {
-          notify({
-            title: "Error",
-            variant: "error",
-            description: error?.response?.data?.message || "Failed to create product",
-          });
-          throw error;
-        }
-      } else {
+      if (!userId) {
         throw new Error("User not authenticated");
       }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["merchantProducts"] });
+
+      try {
+        // Get storeId from user or fetch it
+        // For now, assuming userId can be used as storeId
+        const storeId = userId;
+        
+        // TODO: Upload image if imageFile exists, for now use placeholder
+        const imageUrl = productData.imageFile 
+          ? "https://via.placeholder.com/300" 
+          : null;
+
+        // Convert category string to categoryIds array if needed
+        const categoryIds = productData.category 
+          ? [productData.category] 
+          : [];
+
+        const response = await apiCreateProduct({
+          name: productData.name,
+          description: productData.description,
+          price: productData.price,
+          imageUrl,
+          storeId,
+          categoryIds,
+        });
+        
+        notify({
+          title: "Success",
+          variant: "success",
+          description: "Product created successfully",
+        });
+
+        // Refresh the products list
+        queryClient.invalidateQueries({ queryKey: ["merchantProducts"] });
+        
+        return response;
+      } catch (error) {
+        notify({
+          title: "Error",
+          variant: "error",
+          description: error?.message || "Failed to create product",
+        });
+        throw error;
+      }
     },
   });
 
