@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, forwardRef } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -196,7 +196,7 @@ function AppForm({
 }
 
 // Standalone Input component for use outside of AppForm
-export const Input = ({ label, error, className = "", ...props }) => {
+export const Input = forwardRef(({ label, error, className = "", ...props }, ref) => {
   return (
     <div className="w-full">
       {label && (
@@ -205,16 +205,19 @@ export const Input = ({ label, error, className = "", ...props }) => {
         </label>
       )}
       <input
+        ref={ref}
         className={`w-full px-4 py-3 rounded outline-none bg-sidebar text-onNeutralBg border border-divider focus:border-primary ${className}`}
         {...props}
       />
       {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
     </div>
   );
-};
+});
+
+Input.displayName = "Input";
 
 // Standalone Textarea component for use outside of AppForm
-export const Textarea = ({ label, error, className = "", ...props }) => {
+export const Textarea = forwardRef(({ label, error, className = "", ...props }, ref) => {
   return (
     <div className="w-full">
       {label && (
@@ -223,12 +226,15 @@ export const Textarea = ({ label, error, className = "", ...props }) => {
         </label>
       )}
       <textarea
+        ref={ref}
         className={`w-full px-4 py-3 rounded outline-none bg-sidebar text-onNeutralBg border border-divider focus:border-primary resize-vertical ${className}`}
         {...props}
       />
       {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
     </div>
   );
-};
+});
+
+Textarea.displayName = "Textarea";
 
 export default AppForm;

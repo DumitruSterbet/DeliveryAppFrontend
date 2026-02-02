@@ -95,7 +95,6 @@ const Sidebar = () => {
 
   const getMenuLinks = () => {
     const userRole = user?.role;
-
     // Merchant navigation
     if (userRole === "Merchant") {
       return [

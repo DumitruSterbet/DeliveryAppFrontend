@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useCurrentUser } from "@/lib/store";
 import { useNotification } from "@/hooks";
+import { apiQuery } from "@/lib/helpers";
 
 // TODO: Replace these with actual API calls when backend is ready
 const apiCreateProduct = async ({ name, description, price, stock, imageFile, category }) => {
@@ -24,15 +25,6 @@ const apiCreateProduct = async ({ name, description, price, stock, imageFile, ca
         }
       });
     }, 1000);
-  });
-};
-
-const apiFetchMerchantProducts = async () => {
-  // Mock API call - returns empty for now
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ data: [] });
-    }, 500);
   });
 };
 
@@ -93,13 +85,43 @@ export const useFetchMerchantProducts = () => {
     queryFn: async () => {
       if (userId) {
         try {
-          const response = await apiFetchMerchantProducts();
-          return response.data || [];
+          const response = await apiQuery({
+            endpoint: `api/stores/merchant/${userId}/menu`,
+          });
+          console.log("Merchant products response:", response);
+          // Response structure: { id, name, imageUrl, products: [...] }
+          // apiQuery already extracts the Data field
+          return response;
         } catch (error) {
-          console.error("Error fetching products:", error);
-          return [];
+          console.error("Error fetching merchant products:", error);
+          // Return empty structure instead of null to avoid errors
+          return { id: null, name: "", imageUrl: "", products: [] };
         }
       } else {
+        console.log("No userId available for fetching merchant products");
+        return { id: null, name: "", imageUrl: "", products: [] };
+      }
+    },
+  });
+
+  return { isPending, isSuccess, isError, isFetching, error, data };
+};
+
+export const useFetchProductsByStore = ({ storeId }) => {
+  const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
+    queryKey: [`storeProducts_${storeId}`, { storeId }],
+    queryFn: async () => {
+      try {
+        if (storeId) {
+          const response = await apiQuery({
+            endpoint: `api/stores/${storeId}/menu`,
+          });
+          return response;
+        } else {
+          return null;
+        }
+      } catch (error) {
+        console.error("Error fetching store products:", error);
         return null;
       }
     },

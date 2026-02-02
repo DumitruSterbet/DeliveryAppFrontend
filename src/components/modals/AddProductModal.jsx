@@ -11,9 +11,8 @@ import { Button, FormInput, FormTextarea, ImageUploader } from "@/components";
 const schema = yup.object().shape({
   name: yup.string().required("Product name is required").min(3, "Name must be at least 3 characters"),
   description: yup.string().required("Description is required"),
-  price: yup.number().required("Price is required").positive("Price must be positive"),
-  stock: yup.number().required("Stock is required").integer("Stock must be a whole number").min(0, "Stock cannot be negative"),
-  category: yup.string().required("Category is required"),
+  price: yup.number().required("Price is required").positive("Price must be positive").typeError("Price must be a number"),
+  category: yup.string().optional(),
 });
 
 export default function AddProductModal() {
@@ -46,7 +45,6 @@ export default function AddProductModal() {
       name: "",
       description: "",
       price: "",
-      stock: "",
       category: "",
     },
   });
@@ -77,28 +75,18 @@ export default function AddProductModal() {
           {...register("description")}
         />
 
-        <div className="grid grid-cols-2 gap-4">
-          <FormInput
-            label="Price"
-            type="number"
-            step="0.01"
-            placeholder="0.00"
-            error={errors.price?.message}
-            {...register("price")}
-          />
-
-          <FormInput
-            label="Stock Quantity"
-            type="number"
-            placeholder="0"
-            error={errors.stock?.message}
-            {...register("stock")}
-          />
-        </div>
+        <FormInput
+          label="Price"
+          type="number"
+          step="0.01"
+          placeholder="0.00"
+          error={errors.price?.message}
+          {...register("price")}
+        />
 
         <FormInput
           label="Category"
-          placeholder="e.g., Electronics, Furniture"
+          placeholder="e.g., Electronics, Furniture (optional)"
           error={errors.category?.message}
           {...register("category")}
         />

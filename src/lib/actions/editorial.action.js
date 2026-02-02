@@ -265,7 +265,7 @@ export const useFetchPlaylists = ({ id, section }) => {
           const response = await apiQuery({
             endpoint: `${section}/${id}`,
           });
- console.log("dima",response);
+
           return response;
         } else {
           return null;

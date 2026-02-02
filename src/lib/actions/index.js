@@ -51,3 +51,9 @@ export {
   useUpdateAccountTheme,
   useUpdateAccountPlayer,
 } from "./profile.action";
+
+export {
+  useCreateProduct,
+  useFetchMerchantProducts,
+  useFetchProductsByStore,
+} from "./product.action";

@@ -553,6 +553,20 @@ export const fbCountCollection = async ({ collection, whereQueries }) => {
 };
 
 const getBaseUrl = (endpoint) => {
+  // Check if endpoint is for merchant menu - route to local API
+  const merchantMenuMatch = endpoint.match(/^api\/stores\/merchant\/(.+)\/menu$/);
+  if (merchantMenuMatch) {
+    const merchantId = merchantMenuMatch[1];
+    return `${API_BASE}/stores/merchant/${merchantId}/menu`;
+  }
+
+  // Check if endpoint is for store menu/products - route to local API
+  const storeMenuMatch = endpoint.match(/^api\/stores\/(.+)\/menu$/);
+  if (storeMenuMatch) {
+    const storeId = storeMenuMatch[1];
+    return `${API_BASE}/stores/${storeId}/menu`;
+  }
+
   // Check if endpoint is for chart tracks - route to local API
   const chartTracksMatch = endpoint.match(/^chart\/0\/tracks$/);
   if (chartTracksMatch) {

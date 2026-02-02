@@ -165,7 +165,7 @@ const TrackCard = ({
   const isCurrentTrack =
     trackId === id && trackType === type && playlistId === details.id;
   const isCurrentPlaying = isCurrentTrack && isPlaying;
-console.log("dima-trackcard", {item});
+
   return (
     <li
       key={item.id}
