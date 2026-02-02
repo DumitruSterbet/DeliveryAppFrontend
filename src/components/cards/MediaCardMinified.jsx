@@ -9,6 +9,7 @@ import {
   getFormatData,
   truncate,
   pluralize,
+  formatPrice,
 } from "@/lib/utils";
 import { usePlayer } from "@/hooks";
 
@@ -124,6 +125,11 @@ export default function MediaCardMinified({
               {item?.desc && (
                 <p className="text-sm font-normal text-secondary">
                   {truncate(item?.desc || "", type === "podcast" ? 40 : 20)}
+                </p>
+              )}
+              {type === "product" && item?.price && (
+                <p className="mt-1 text-base font-semibold text-primary">
+                  {formatPrice(item.price)}
                 </p>
               )}
               {(item?.tracksNo ||

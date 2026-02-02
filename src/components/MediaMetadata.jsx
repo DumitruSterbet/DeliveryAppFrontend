@@ -5,6 +5,7 @@ import {
   formatNumberWithCommas,
   formatTime,
   pluralize,
+  formatPrice,
 } from "@/lib/utils";
 
 export const Genres = ({ genres }) => {
@@ -91,16 +92,23 @@ export const MetaDetailsMediaCard = ({
   albumsNo,
   releaseDate,
   type,
+  price,
 }) => {
   return (
     <>
-      {(tracksNo || releaseDate || fansNo || albumsNo) && (
+      {(tracksNo || releaseDate || fansNo || albumsNo || (type === "product" && price)) && (
         <>
           {["podcast", "artist"].includes(type) ? (
             <p className="mt-1 text-xs font-normal text-secondary">
               {fansNo && <span>{formatNumberWithCommas(fansNo)} fans</span>}
               {albumsNo && <span>&nbsp;&nbsp;{albumsNo} albums</span>}
             </p>
+          ) : type === "product" ? (
+            price && (
+              <p className="mt-1 text-sm font-semibold text-primary">
+                {formatPrice(price)}
+              </p>
+            )
           ) : (
             <p className="mt-1 text-xs font-normal text-secondary">
               {tracksNo && <span>{tracksNo} tracks &nbsp;&nbsp;</span>}

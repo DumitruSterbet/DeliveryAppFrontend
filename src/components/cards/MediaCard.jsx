@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { usePlayerStore } from "@/lib/store";
 import { useFetchTracks } from "@/lib/actions";
-import { classNames, getFormatData, truncate } from "@/lib/utils";
+import { classNames, getFormatData, truncate, formatPrice } from "@/lib/utils";
 import { usePlayer } from "@/hooks";
 
 import { Icon, MetaDetailsMediaCard } from "@/components";
@@ -141,13 +141,18 @@ export default function MediaCard({ item, type }) {
             {truncate(item?.desc || "", type === "podcast" ? 40 : 20)}
           </p>
         )}
+        {type === "product" && item?.price && (
+          <p className="mt-1 text-lg font-bold text-primary">
+            {formatPrice(item.price)}
+          </p>
+        )}
 
         <MetaDetailsMediaCard
           fansNo={item?.fansNo}
           tracksNo={item?.tracksNo}
           releaseDate={item?.releaseDate}
           albumsNo={item?.albumsNo}
-          type={type}
+          type={type}      
         />
       </div>
     </div>

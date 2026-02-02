@@ -71,6 +71,13 @@ export function formatNumberWithCommas(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+export const formatPrice = (price, currency = "$") => {
+  if (price === null || price === undefined) return "";
+  const numPrice = typeof price === "string" ? parseFloat(price) : price;
+  if (isNaN(numPrice)) return "";
+  return `${currency}${numPrice.toFixed(2)}`;
+};
+
 export const floatToTime = (floatTime) => {
   const num = floatTime.toFixed(2);
   if (!(typeof floatTime !== "number" || isNaN(floatTime))) {
@@ -143,6 +150,7 @@ export const getFormatData = (arr, image_alt) => {
           audioSrc: item?.preview,
           tracks: item?.tracks,
           details: item?.details,
+          price: item?.price,
         };
       })
     : [];
