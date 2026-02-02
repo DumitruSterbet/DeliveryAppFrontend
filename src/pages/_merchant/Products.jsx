@@ -155,6 +155,20 @@ export default function Products() {
     return null;
   }, []);
 
+  // Group products by category
+  const productsByCategory = useMemo(() => {
+    if (!products) return {};
+    
+    return products.reduce((acc, product) => {
+      const category = product.category || "Uncategorized";
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(product);
+      return acc;
+    }, {});
+  }, [products]);
+
   const handleCreateProduct = () => {
     openModal();
     getModalContent(<AddProductModal />);
@@ -167,37 +181,48 @@ export default function Products() {
           {!user || user.role !== "Merchant" ? (
             <Navigate to="/" replace={true} />
           ) : (
-            <Sections.MediaSectionMinified
-              data={products}
-              title="My Products"
-              subTitle="Manage your product inventory and listings."
-              titleType="large"
-              type="product"
-              gridNumber={3}
-              imageDims={28}
-              isMyPlaylist={false}
-              CreatePlaylistComp={() => (
-                <li className="col-span-1">
-                  <div className="h-full add_product">
-                    <div className="flex-col w-full h-full gap-2 p-4 border border-dashed rounded border-secondary flex_justify_center text-onNeutralBg">
-                      <IconButton
-                        name="MdAdd"
-                        className="w-12 h-12 rounded-full shadow-lg bg-primary flex_justify_center"
-                        iconClassName="!text-white"
-                        size="30"
-                        onClick={handleCreateProduct}
-                      />
-                      <p className="text-sm font-semibold tracking-wider">
-                        Add Product
-                      </p>
-                    </div>
-                  </div>
-                </li>
+            <div className="flex flex-col gap-y-8">
+              {Object.keys(productsByCategory).length > 0 ? (
+                Object.entries(productsByCategory).map(([category, categoryProducts]) => (
+                  <Sections.MediaSectionMinified
+                    key={category}
+                    data={categoryProducts}
+                    title={category}
+                    subTitle={`${categoryProducts.length} ${categoryProducts.length === 1 ? 'product' : 'products'}`}
+                    titleType="large"
+                    type="product"
+                    gridNumber={3}
+                    imageDims={28}
+                    isMyPlaylist={false}
+                    CreatePlaylistComp={() => (
+                      <li className="col-span-1">
+                        <div className="h-full add_product">
+                          <div className="flex-col w-full h-full gap-2 p-4 border border-dashed rounded border-secondary flex_justify_center text-onNeutralBg">
+                            <IconButton
+                              name="MdAdd"
+                              className="w-12 h-12 rounded-full shadow-lg bg-primary flex_justify_center"
+                              iconClassName="!text-white"
+                              size="30"
+                              onClick={handleCreateProduct}
+                            />
+                            <p className="text-sm font-semibold tracking-wider">
+                              Add Product
+                            </p>
+                          </div>
+                        </div>
+                      </li>
+                    )}
+                    isLoading={false}
+                    isSuccess={true}
+                    noDataText="No products in this category."
+                  />
+                ))
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-secondary">No products yet. Add your first product to get started!</p>
+                </div>
               )}
-              isLoading={false}
-              isSuccess={true}
-              noDataText="No products yet. Add your first product to get started!"
-            />
+            </div>
           )}
         </>
       )}
