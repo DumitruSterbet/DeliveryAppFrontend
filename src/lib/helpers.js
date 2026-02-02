@@ -573,11 +573,23 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/stores/category/${categoryId}`;
   }
   
+  // Check if endpoint is for all stores - route to local API
+  const allStoresMatch = endpoint.match(/^stores\/all$/);
+  if (allStoresMatch) {
+    return `${API_BASE}/stores`;
+  }
+  
   // Check if endpoint is for top products by category - route to local API
   const topProductsMatch = endpoint.match(/^top\/category\/(.+)$/);
   if (topProductsMatch) {
     const categoryId = topProductsMatch[1];
     return `${API_BASE}/products/top/category/${categoryId}`;
+  }
+  
+  // Check if endpoint is for all top products - route to local API
+  const allTopProductsMatch = endpoint.match(/^products\/top\/all$/);
+  if (allTopProductsMatch) {
+    return `${API_BASE}/products/top`;
   }
   
   // Check if endpoint is for category by id - route to local API

@@ -3,6 +3,8 @@ export {
   useFetchNewReleases,
   useFetchTopSelection,
   useFetchTopProductsByCategory,
+  useFetchAllReleases,
+  useFetchAllTopProducts,
   useFetchChartBySection,
   useFetchArtist,
   useFetchGenres,

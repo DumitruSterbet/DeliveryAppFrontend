@@ -1,7 +1,8 @@
 import {
   useFetchRecentPlayed,
   useFetchTopCharts,
-  useFetchNewReleases,
+  useFetchAllReleases,
+  useFetchAllTopProducts,
 } from "@/lib/actions";
 import { Sections } from "@/components";
 
@@ -20,15 +21,20 @@ export default function Discover() {
    */
 
   const {
-    data: newReleases,
-    isPending: isNewReleaseDataPending,
-    isSuccess: isNewReleaseDataSuccess,
-  } = useFetchNewReleases({
-    id: "0",
-  });
+    data: allReleases,
+    isPending: isAllReleasesDataPending,
+    isSuccess: isAllReleasesDataSuccess,
+  } = useFetchAllReleases();
+
+  const {
+    data: allTopProducts,
+    isPending: isAllTopProductsDataPending,
+    isSuccess: isAllTopProductsDataSuccess,
+  } = useFetchAllTopProducts();
 
   //const { playlists, artists, albums, podcasts } = topChartData || {};
-  const { releases } = newReleases || {};
+  const { releases } = allReleases || {};
+  const { topProducts } = allTopProducts || {};
 
   return (
     <section className="discover_page">
@@ -86,13 +92,23 @@ export default function Discover() {
         */}
 
         <Sections.MediaSection
+          data={topProducts?.data}
+          title="Top Products"
+          subTitle="Explore our most popular products across all categories."
+          cardItemNumber={10}
+          type="product"
+          isLoading={isAllTopProductsDataPending}
+          isSuccess={isAllTopProductsDataSuccess}
+        />
+
+        <Sections.MediaSection
           data={releases?.data}
-          title="New Releases"
+          title="All Stores"
           subTitle="Discover fresh and latest soundscapes in our collection."
           cardItemNumber={10}
           type="album"
-          isLoading={isNewReleaseDataPending}
-          isSuccess={isNewReleaseDataSuccess}
+          isLoading={isAllReleasesDataPending}
+          isSuccess={isAllReleasesDataSuccess}
         />
 {/*
         <Sections.MediaSection

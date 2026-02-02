@@ -40,18 +40,13 @@ export const useFetchNewReleases = ({ id }) => {
             endpoint: `editorial/${id}/releases`,
           });
          
-
-          // Wrap array response in data property if it's a direct array
           const formattedData = Array.isArray(data) ? { data } : data;
-         console.log("dimwa");
           return { ["releases"]: formattedData };
            
         } else {
           return null;
-          // throw new Error("Invalid params");
         }
       } catch (error) {
-        // console.log(error);
       }
     },
   });
@@ -74,7 +69,6 @@ export const useFetchTopSelection = ({ id }) => {
           return null;
         }
       } catch (error) {
-        // console.log(error);
       }
     },
   });
@@ -91,15 +85,48 @@ export const useFetchTopProductsByCategory = ({ id }) => {
           const data = await apiQuery({
             endpoint: `top/category/${id}`,
           });
-
-          // Wrap array response in data property if it's a direct array
           const formattedData = Array.isArray(data) ? { data } : data;
           return { ["topProducts"]: formattedData };
         } else {
           return null;
         }
       } catch (error) {
-        // console.log(error);
+      }
+    },
+  });
+
+  return { isPending, isSuccess, isError, isFetching, error, data };
+};
+
+export const useFetchAllReleases = () => {
+  const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
+    queryKey: ['allReleases'],
+    queryFn: async () => {
+      try {
+        const data = await apiQuery({
+          endpoint: 'stores/all',
+        });
+        const formattedData = Array.isArray(data) ? { data } : data;
+        return { ["releases"]: formattedData };
+      } catch (error) {
+      }
+    },
+  });
+
+  return { isPending, isSuccess, isError, isFetching, error, data };
+};
+
+export const useFetchAllTopProducts = () => {
+  const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
+    queryKey: ['allTopProducts'],
+    queryFn: async () => {
+      try {
+        const data = await apiQuery({
+          endpoint: 'products/top/all',
+        });
+        const formattedData = Array.isArray(data) ? { data } : data;
+        return { ["topProducts"]: formattedData };
+      } catch (error) {
       }
     },
   });
@@ -115,7 +142,6 @@ export const useFetchGenres = () => {
         const response = await apiFetchCategories();
         return response?.filter((item) => item.name !== "All");
       } catch (error) {
-        // console.log(error);
       }
     },
   });
@@ -137,7 +163,6 @@ export const useFetchGenreById = ({ id }) => {
           return null;
         }
       } catch (error) {
-        // console.log(error);
       }
     },
   });
@@ -160,7 +185,6 @@ export const useFetchGenreBySection = ({ id, section }) => {
           return null;
         }
       } catch (error) {
-        // console.log(error);
       }
     },
   });
@@ -204,7 +228,6 @@ export const useFetchArtist = ({ id }) => {
           return null;
         }
       } catch (error) {
-        // console.log(error);
       }
     },
   });
@@ -221,13 +244,11 @@ export const useFetchChartBySection = ({ id, section }) => {
           const response = await apiQuery({
             endpoint: `chart/${id}/${section}`,
           });
-console.log("dima12212",response);
           return response;
         } else {
           return null;
         }
       } catch (error) {
-        // console.log(error);
       }
     },
   });
@@ -250,7 +271,6 @@ export const useFetchPlaylists = ({ id, section }) => {
           return null;
         }
       } catch (error) {
-        // console.log(error);
       }
     },
   });
@@ -277,7 +297,6 @@ export const fetchMultiplePlaylists = async (data) => {
 
     return await Promise.all(mappedData);
   } catch (error) {
-    // console.log(error);
   }
 };
 
@@ -297,7 +316,6 @@ export const useFetchTracks = () => {
 
           if (callback) callback(response.data);
         } catch (error) {
-          // console.log(error);
         } finally {
           setGetId(null);
         }

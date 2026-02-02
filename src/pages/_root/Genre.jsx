@@ -1,8 +1,5 @@
 import {
   useFetchNewReleases,
-  useFetchChartBySection,
-  useFetchTopSelection,
-  useFetchGenreBySection,
   useFetchGenreById,
   useFetchTopProductsByCategory,
 } from "@/lib/actions";
