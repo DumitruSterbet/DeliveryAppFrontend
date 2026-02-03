@@ -25,6 +25,26 @@ const apiCreateProduct = async ({ name, description, price, imageUrl, storeId, c
   return response;
 };
 
+const apiUpdateProduct = async ({ id, name, description, price, imageUrl, storeId, categoryIds }) => {
+  // Call the real API endpoint for updating
+  const response = await apiQuery({
+    endpoint: `api/products/${id}`,
+    method: 'PUT',
+    config: {
+      data: {
+        name,
+        description,
+        price: parseFloat(price),
+        imageUrl: imageUrl || null,
+        storeId,
+        categoryIds: categoryIds || [],
+      },
+    },
+  });
+  
+  return response;
+};
+
 export const useCreateProduct = () => {
   const { currentUser } = useCurrentUser();
   const { userId, user } = currentUser || {};
@@ -86,6 +106,70 @@ export const useCreateProduct = () => {
   return {
     createProduct,
     isCreating,
+  };
+};
+
+export const useUpdateProduct = () => {
+  const { currentUser } = useCurrentUser();
+  const { userId, user } = currentUser || {};
+
+  const navigate = useNavigate();
+  const [notify] = useNotification();
+
+  const queryClient = useQueryClient();
+
+  const { mutate: updateProduct, isPending: isUpdating } = useMutation({
+    mutationFn: async (productData) => {
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
+
+      try {
+        // Get storeId from user or fetch it
+        const storeId = userId;
+        
+        // TODO: Upload image if imageFile exists, for now use existing or placeholder
+        const imageUrl = productData.imageFile 
+          ? "https://via.placeholder.com/300" 
+          : productData.currentImageUrl || null;
+
+        // Use categoryIds array from productData
+        const categoryIds = productData.categoryIds || [];
+
+        const response = await apiUpdateProduct({
+          id: productData.id,
+          name: productData.name,
+          description: productData.description,
+          price: productData.price,
+          imageUrl,
+          storeId,
+          categoryIds,
+        });
+        
+        notify({
+          title: "Success",
+          variant: "success",
+          description: "Product updated successfully",
+        });
+
+        // Refresh the products list
+        queryClient.invalidateQueries({ queryKey: ["merchantProducts"] });
+        
+        return response;
+      } catch (error) {
+        notify({
+          title: "Error",
+          variant: "error",
+          description: error?.message || "Failed to update product",
+        });
+        throw error;
+      }
+    },
+  });
+
+  return {
+    updateProduct,
+    isUpdating,
   };
 };
 

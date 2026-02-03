@@ -38,6 +38,7 @@ export default function MediaSectionMinified({
   showPattern,
   isLoading,
   isSuccess,
+  onEdit,
 }) {
   const getCardItemNumber = cardItemNumber || data?.length;
 
@@ -98,6 +99,7 @@ export default function MediaSectionMinified({
                           type={item?.type || type}
                           imageDims={imageDims}
                           isMyPlaylist={isMyPlaylist}
+                          onEdit={onEdit}
                         />
                       ))}
                     {CreatePlaylistComp && <CreatePlaylistComp />}

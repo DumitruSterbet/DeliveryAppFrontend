@@ -559,6 +559,13 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/products`;
   }
 
+  // Check if endpoint is for specific product update (PUT) - route to local API
+  const productUpdateMatch = endpoint.match(/^api\/products\/(.+)$/);
+  if (productUpdateMatch) {
+    const productId = productUpdateMatch[1];
+    return `${API_BASE}/products/${productId}`;
+  }
+
   // Check if endpoint is for merchant menu - route to local API
   const merchantMenuMatch = endpoint.match(/^api\/stores\/merchant\/(.+)\/menu$/);
   if (merchantMenuMatch) {

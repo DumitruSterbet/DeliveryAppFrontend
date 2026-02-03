@@ -6,8 +6,9 @@ import { useFetchMerchantProducts } from "@/lib/actions";
 import { useFetchCategories } from "@/lib/actions/editorial.action";
 import { IconButton, Sections } from "@/components";
 
-// Lazy load the modal to reduce initial bundle size
+// Lazy load the modals to reduce initial bundle size
 const AddProductModal = lazy(() => import("@/components/modals/AddProductModal"));
+const EditProductModal = lazy(() => import("@/components/modals/EditProductModal"));
 
 export default function Products() {
   const { currentUser } = useCurrentUser();
@@ -91,6 +92,11 @@ export default function Products() {
     getModalContent(<AddProductModal />);
   }, [openModal, getModalContent]);
 
+  const handleEditProduct = useCallback((product) => {
+    openModal();
+    getModalContent(<EditProductModal product={product} />);
+  }, [openModal, getModalContent]);
+
   // Debug logging
   console.log("Products page - isLoaded:", isLoaded, "user:", user, "role:", user?.role);
 
@@ -134,6 +140,7 @@ export default function Products() {
               gridNumber={3}
               imageDims={28}
               isMyPlaylist={false}
+              onEdit={handleEditProduct}
               CreatePlaylistComp={() => (
                 <li className="col-span-1">
                   <div className="h-full add_product">
