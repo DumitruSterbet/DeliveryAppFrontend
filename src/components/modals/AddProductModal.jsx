@@ -4,15 +4,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 import { useCreateProduct } from "@/lib/actions/product.action";
+import { useFetchCategories } from "@/lib/actions/editorial.action";
 import { useAppModal } from "@/lib/store";
-import { Button, FormInput, FormTextarea, ImageUploader, Icon } from "@/components";
+import { Button, FormInput, FormTextarea, ImageUploader, Icon, MultiSelect } from "@/components";
 
 // Move schema outside component to prevent recreation on every render
 const schema = yup.object().shape({
   name: yup.string().required("Product name is required").min(3, "Name must be at least 3 characters"),
   description: yup.string().required("Description is required"),
   price: yup.number().required("Price is required").positive("Price must be positive").typeError("Price must be a number"),
-  category: yup.string().optional(),
 });
 
 // Move default values outside component
@@ -20,14 +20,15 @@ const defaultFormValues = {
   name: "",
   description: "",
   price: "",
-  category: "",
 };
 
 export default function AddProductModal() {
   const { close } = useAppModal();
   const { createProduct, isCreating } = useCreateProduct();
+  const { data: categories = [], isPending: categoriesLoading } = useFetchCategories();
   const [imageFile, setImageFile] = useState(null);
   const [blobUrl, setBlobUrl] = useState(null);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
   const imageRef = useRef(null);
 
   // Create and cleanup blob URL
@@ -65,10 +66,10 @@ export default function AddProductModal() {
   });
 
   const onSubmit = useCallback(async (data) => {
-    // Pass the image file along with form data
-    createProduct({ ...data, imageFile });
+    // Pass the image file and selected category IDs along with form data
+    createProduct({ ...data, imageFile, categoryIds: selectedCategoryIds });
     close();
-  }, [imageFile, createProduct, close]);
+  }, [imageFile, selectedCategoryIds, createProduct, close]);
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -119,11 +120,13 @@ export default function AddProductModal() {
                 <span className="absolute left-3 bottom-3 text-secondary text-sm font-semibold">$</span>
               </div>
 
-              <FormInput
-                label="Category"
-                placeholder="e.g., Electronics, Furniture, Clothing"
-                error={errors.category?.message}
-                {...register("category")}
+              <MultiSelect
+                label="Categories"
+                options={categories.map(cat => ({ id: cat.id, name: cat.name }))}
+                value={selectedCategoryIds}
+                onChange={setSelectedCategoryIds}
+                placeholder="Select categories..."
+                disabled={categoriesLoading}
               />
             </div>
           </div>

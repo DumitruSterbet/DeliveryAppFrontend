@@ -3,6 +3,18 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { apiFetchCategories, apiQuery } from "@/lib/helpers";
 
+export const useFetchCategories = () => {
+  const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const categories = await apiFetchCategories();
+      return categories || [];
+    },
+  });
+
+  return { isPending, isSuccess, isError, isFetching, error, data };
+};
+
 export const useFetchTopCharts = (params) => {
   const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
     queryKey: ["topCharts", params],

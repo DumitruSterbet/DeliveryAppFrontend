@@ -50,10 +50,8 @@ export const useCreateProduct = () => {
           ? "https://via.placeholder.com/300" 
           : null;
 
-        // Convert category string to categoryIds array if needed
-        const categoryIds = productData.category 
-          ? [productData.category] 
-          : [];
+        // Use categoryIds array from productData
+        const categoryIds = productData.categoryIds || [];
 
         const response = await apiCreateProduct({
           name: productData.name,
