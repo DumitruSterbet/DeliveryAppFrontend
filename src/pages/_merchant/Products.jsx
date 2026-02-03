@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 
 import { useCurrentUser, useAppModal } from "@/lib/store";
 import { useFetchMerchantProducts } from "@/lib/actions";
+import { useFetchCategories } from "@/lib/actions/editorial.action";
 import { IconButton, Sections } from "@/components";
 
 // Lazy load the modal to reduce initial bundle size
@@ -15,6 +16,18 @@ export default function Products() {
 
   // Fetch products from backend
   const { data: apiResponse, isPending, isSuccess } = useFetchMerchantProducts();
+  
+  // Fetch categories to map IDs to names
+  const { data: categories = [] } = useFetchCategories();
+  
+  // Create a lookup map for category names
+  const categoryMap = useMemo(() => {
+    const map = {};
+    categories.forEach(cat => {
+      map[cat.id] = cat.name;
+    });
+    return map;
+  }, [categories]);
 
   const products = useMemo(() => {
     // Extract products array from the response
@@ -24,8 +37,14 @@ export default function Products() {
     if (productsArray && Array.isArray(productsArray) && productsArray.length > 0) {
       return productsArray.map((product) => {
         const { imageUrl, createdAt, description, name, price, id, categoryIds } = product;
-        // Use first categoryId as category for now (can be enhanced later to show multiple)
-        const category = categoryIds && categoryIds.length > 0 ? categoryIds[0] : "Uncategorized";
+        
+        // Map category IDs to names
+        const categoryNames = categoryIds && categoryIds.length > 0
+          ? categoryIds.map(catId => categoryMap[catId] || 'Unknown').filter(Boolean)
+          : [];
+        
+        // Use first category name or "Uncategorized"
+        const category = categoryNames.length > 0 ? categoryNames[0] : "Uncategorized";
         
         return {
           id,
@@ -38,22 +57,31 @@ export default function Products() {
           track_total: null, // No stock field in new response
           category,
           categoryIds, // Keep array for future use
+          categoryNames, // Store all category names
         };
       });
     }
     return [];
-  }, [apiResponse]);
+  }, [apiResponse, categoryMap]);
 
-  // Group products by category
+  // Group products by category - products with multiple categories appear in each group
   const productsByCategory = useMemo(() => {
     if (!products || products.length === 0) return {};
     
     return products.reduce((acc, product) => {
-      const category = product.category || "Uncategorized";
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(product);
+      // Get all category names for this product
+      const categories = product.categoryNames && product.categoryNames.length > 0 
+        ? product.categoryNames 
+        : ["Uncategorized"];
+      
+      // Add product to each of its categories
+      categories.forEach(category => {
+        if (!acc[category]) {
+          acc[category] = [];
+        }
+        acc[category].push(product);
+      });
+      
       return acc;
     }, {});
   }, [products]);
@@ -87,7 +115,15 @@ export default function Products() {
     <section className="products_page">
       <div className="flex flex-col gap-y-8">
         {Object.keys(productsByCategory).length > 0 ? (
-          Object.entries(productsByCategory).map(([category, categoryProducts]) => (
+          Object.entries(productsByCategory)
+            .sort(([categoryA], [categoryB]) => {
+              // Put "Uncategorized" first
+              if (categoryA === "Uncategorized") return -1;
+              if (categoryB === "Uncategorized") return 1;
+              // Then sort alphabetically
+              return categoryA.localeCompare(categoryB);
+            })
+            .map(([category, categoryProducts]) => (
             <Sections.MediaSectionMinified
               key={category}
               data={categoryProducts}
