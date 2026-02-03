@@ -1,13 +1,13 @@
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 import { useCreateProduct } from "@/lib/actions/product.action";
 import { useAppModal } from "@/lib/store";
-import { fileBlob } from "@/lib/utils";
 import { Button, FormInput, FormTextarea, ImageUploader } from "@/components";
 
+// Move schema outside component to prevent recreation on every render
 const schema = yup.object().shape({
   name: yup.string().required("Product name is required").min(3, "Name must be at least 3 characters"),
   description: yup.string().required("Description is required"),
@@ -15,17 +15,37 @@ const schema = yup.object().shape({
   category: yup.string().optional(),
 });
 
+// Move default values outside component
+const defaultFormValues = {
+  name: "",
+  description: "",
+  price: "",
+  category: "",
+};
+
 export default function AddProductModal() {
   const { close } = useAppModal();
   const { createProduct, isCreating } = useCreateProduct();
   const [imageFile, setImageFile] = useState(null);
+  const [blobUrl, setBlobUrl] = useState(null);
   const imageRef = useRef(null);
 
-  const blob = useMemo(() => {
-    return fileBlob(imageFile ? [imageFile] : null);
+  // Create and cleanup blob URL
+  useEffect(() => {
+    if (imageFile) {
+      const url = URL.createObjectURL(imageFile);
+      setBlobUrl(url);
+      
+      // Cleanup function to revoke blob URL
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    } else {
+      setBlobUrl(null);
+    }
   }, [imageFile]);
 
-  const handleImage = (e) => {
+  const handleImage = useCallback((e) => {
     e.preventDefault();
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
@@ -33,7 +53,7 @@ export default function AddProductModal() {
         setImageFile(file);
       }
     }
-  };
+  }, []);
 
   const {
     register,
@@ -41,19 +61,14 @@ export default function AddProductModal() {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      name: "",
-      description: "",
-      price: "",
-      category: "",
-    },
+    defaultValues: defaultFormValues,
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = useCallback(async (data) => {
     // Pass the image file along with form data
     createProduct({ ...data, imageFile });
     close();
-  };
+  }, [imageFile, createProduct, close]);
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -103,7 +118,7 @@ export default function AddProductModal() {
             ref={imageRef}
           />
           <ImageUploader
-            blobUrl={blob.blobUrl}
+            blobUrl={blobUrl}
             imageRef={imageRef}
             containerDims="h-48 w-full"
             borderType="rounded"

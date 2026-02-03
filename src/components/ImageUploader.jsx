@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
+import { memo } from "react";
 import { classNames } from "@/lib/utils";
 
 import { Icon } from "@/components";
 
-export default function ImageUploader({
+function ImageUploader({
   blobUrl,
   imageRef,
   containerDims = "h-32 w-full",
@@ -53,3 +54,5 @@ export default function ImageUploader({
     </div>
   );
 }
+
+export default memo(ImageUploader);

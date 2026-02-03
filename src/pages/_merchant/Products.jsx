@@ -1,10 +1,12 @@
-import { useMemo } from "react";
+import { useMemo, lazy, useCallback } from "react";
 import { Navigate } from "react-router-dom";
 
 import { useCurrentUser, useAppModal } from "@/lib/store";
 import { useFetchMerchantProducts } from "@/lib/actions";
 import { IconButton, Sections } from "@/components";
-import AddProductModal from "@/components/modals/AddProductModal";
+
+// Lazy load the modal to reduce initial bundle size
+const AddProductModal = lazy(() => import("@/components/modals/AddProductModal"));
 
 export default function Products() {
   const { currentUser } = useCurrentUser();
@@ -56,10 +58,10 @@ export default function Products() {
     }, {});
   }, [products]);
 
-  const handleCreateProduct = () => {
+  const handleCreateProduct = useCallback(() => {
     openModal();
     getModalContent(<AddProductModal />);
-  };
+  }, [openModal, getModalContent]);
 
   // Debug logging
   console.log("Products page - isLoaded:", isLoaded, "user:", user, "role:", user?.role);
