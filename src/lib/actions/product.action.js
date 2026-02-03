@@ -4,56 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCurrentUser } from "@/lib/store";
 import { useNotification } from "@/hooks";
 import { apiQuery } from "@/lib/helpers";
-
-const apiCreateProduct = async ({ name, description, price, imageUrl, storeId, categoryIds }) => {
-  // Call the real API endpoint
-  const response = await apiQuery({
-    endpoint: 'api/products',
-    method: 'POST',
-    config: {
-      data: {
-        name,
-        description,
-        price: parseFloat(price),
-        imageUrl: imageUrl || null,
-        storeId,
-        categoryIds: categoryIds || [],
-      },
-    },
-  });
-  
-  return response;
-};
-
-const apiUpdateProduct = async ({ id, name, description, price, imageUrl, storeId, categoryIds }) => {
-  // Call the real API endpoint for updating
-  const response = await apiQuery({
-    endpoint: `api/products/${id}`,
-    method: 'PUT',
-    config: {
-      data: {
-        name,
-        description,
-        price: parseFloat(price),
-        imageUrl: imageUrl || null,
-        storeId,
-        categoryIds: categoryIds || [],
-      },
-    },
-  });
-  
-  return response;
-};
-
-const apiDeleteProduct = async (productId) => {
-  // Call the real API endpoint for deleting
-  const response = await apiQuery({
-    endpoint: `api/products/${productId}`,
-    method: 'DELETE',
-  });
-  
-  return response;
-};
+import { apiCreateProduct, apiUpdateProduct, apiDeleteProduct } from "./product.api.helper";
 
 export const useCreateProduct = () => {
   const { currentUser } = useCurrentUser();

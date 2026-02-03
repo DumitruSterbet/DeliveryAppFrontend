@@ -1,11 +1,20 @@
-import { apiCommand } from "@/lib/helpers";
+import { apiQuery } from "@/lib/helpers";
 
-export const apiCreateProduct = async (productData) => {
+export const apiCreateProduct = async ({ name, description, price, imageUrl, storeId, categoryIds }) => {
   try {
-    const response = await apiCommand({
-      endpoint: "api/products",
-      method: "POST",
-      data: productData,
+    const response = await apiQuery({
+      endpoint: 'api/products',
+      method: 'POST',
+      config: {
+        data: {
+          name,
+          description,
+          price: parseFloat(price),
+          imageUrl: imageUrl || null,
+          storeId,
+          categoryIds: categoryIds || [],
+        },
+      },
     });
     
     return response;
@@ -15,12 +24,21 @@ export const apiCreateProduct = async (productData) => {
   }
 };
 
-export const apiUpdateProduct = async (productData) => {
+export const apiUpdateProduct = async ({ id, name, description, price, imageUrl, storeId, categoryIds }) => {
   try {
-    const response = await apiCommand({
-      endpoint: `api/products/${productData.id}`,
-      method: "PUT",
-      data: productData,
+    const response = await apiQuery({
+      endpoint: `api/products/${id}`,
+      method: 'PUT',
+      config: {
+        data: {
+          name,
+          description,
+          price: parseFloat(price),
+          imageUrl: imageUrl || null,
+          storeId,
+          categoryIds: categoryIds || [],
+        },
+      },
     });
     
     return response;
@@ -32,9 +50,9 @@ export const apiUpdateProduct = async (productData) => {
 
 export const apiDeleteProduct = async (productId) => {
   try {
-    const response = await apiCommand({
+    const response = await apiQuery({
       endpoint: `api/products/${productId}`,
-      method: "DELETE",
+      method: 'DELETE',
     });
     
     return response;
