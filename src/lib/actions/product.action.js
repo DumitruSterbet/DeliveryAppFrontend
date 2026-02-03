@@ -45,6 +45,16 @@ const apiUpdateProduct = async ({ id, name, description, price, imageUrl, storeI
   return response;
 };
 
+const apiDeleteProduct = async (productId) => {
+  // Call the real API endpoint for deleting
+  const response = await apiQuery({
+    endpoint: `api/products/${productId}`,
+    method: 'DELETE',
+  });
+  
+  return response;
+};
+
 export const useCreateProduct = () => {
   const { currentUser } = useCurrentUser();
   const { userId, user } = currentUser || {};
@@ -170,6 +180,49 @@ export const useUpdateProduct = () => {
   return {
     updateProduct,
     isUpdating,
+  };
+};
+
+export const useDeleteProduct = () => {
+  const { currentUser } = useCurrentUser();
+  const { userId } = currentUser || {};
+
+  const [notify] = useNotification();
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteProduct, isPending: isDeleting } = useMutation({
+    mutationFn: async (productId) => {
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
+
+      try {
+        const response = await apiDeleteProduct(productId);
+        
+        notify({
+          title: "Success",
+          variant: "success",
+          description: "Product deleted successfully",
+        });
+
+        // Refresh the products list
+        queryClient.invalidateQueries({ queryKey: ["merchantProducts"] });
+        
+        return response;
+      } catch (error) {
+        notify({
+          title: "Error",
+          variant: "error",
+          description: error?.message || "Failed to delete product",
+        });
+        throw error;
+      }
+    },
+  });
+
+  return {
+    deleteProduct,
+    isDeleting,
   };
 };
 

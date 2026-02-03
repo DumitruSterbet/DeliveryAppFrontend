@@ -39,6 +39,7 @@ export default function MediaSectionMinified({
   isLoading,
   isSuccess,
   onEdit,
+  onDelete,
 }) {
   const getCardItemNumber = cardItemNumber || data?.length;
 
@@ -100,6 +101,7 @@ export default function MediaSectionMinified({
                           imageDims={imageDims}
                           isMyPlaylist={isMyPlaylist}
                           onEdit={onEdit}
+                          onDelete={onDelete}
                         />
                       ))}
                     {CreatePlaylistComp && <CreatePlaylistComp />}

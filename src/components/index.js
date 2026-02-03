@@ -4,6 +4,7 @@ export { default as Modal } from "./Modal";
 export { default as Form, Input as FormInput, Textarea as FormTextarea } from "./Form";
 export { default as ImageUploader } from "./ImageUploader";
 export { default as MultiSelect } from "./MultiSelect";
+export { default as ConfirmDialog } from "./ConfirmDialog";
 export { default as Overlay } from "./Overlay";
 export { default as PatternBg } from "./PatternBg";
 export { default as Dialog } from "./Dialog";

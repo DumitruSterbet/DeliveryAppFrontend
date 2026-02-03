@@ -1,10 +1,11 @@
-import { useMemo, lazy, useCallback } from "react";
+import { useMemo, lazy, useCallback, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 import { useCurrentUser, useAppModal } from "@/lib/store";
 import { useFetchMerchantProducts } from "@/lib/actions";
 import { useFetchCategories } from "@/lib/actions/editorial.action";
-import { IconButton, Sections } from "@/components";
+import { useDeleteProduct } from "@/lib/actions/product.action";
+import { IconButton, Sections, ConfirmDialog } from "@/components";
 
 // Lazy load the modals to reduce initial bundle size
 const AddProductModal = lazy(() => import("@/components/modals/AddProductModal"));
@@ -14,6 +15,8 @@ export default function Products() {
   const { currentUser } = useCurrentUser();
   const { user, isLoaded } = currentUser || {};
   const { open: openModal, getModalContent } = useAppModal();
+  const { deleteProduct, isDeleting } = useDeleteProduct();
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, product: null });
 
   // Fetch products from backend
   const { data: apiResponse, isPending, isSuccess } = useFetchMerchantProducts();
@@ -97,6 +100,21 @@ export default function Products() {
     getModalContent(<EditProductModal product={product} />);
   }, [openModal, getModalContent]);
 
+  const handleDeleteProduct = useCallback((product) => {
+    setConfirmDialog({ isOpen: true, product });
+  }, []);
+
+  const confirmDelete = useCallback(() => {
+    if (confirmDialog.product) {
+      deleteProduct(confirmDialog.product.id);
+      setConfirmDialog({ isOpen: false, product: null });
+    }
+  }, [confirmDialog.product, deleteProduct]);
+
+  const cancelDelete = useCallback(() => {
+    setConfirmDialog({ isOpen: false, product: null });
+  }, []);
+
   // Debug logging
   console.log("Products page - isLoaded:", isLoaded, "user:", user, "role:", user?.role);
 
@@ -141,6 +159,7 @@ export default function Products() {
               imageDims={28}
               isMyPlaylist={false}
               onEdit={handleEditProduct}
+              onDelete={handleDeleteProduct}
               CreatePlaylistComp={() => (
                 <li className="col-span-1">
                   <div className="h-full add_product">
@@ -188,6 +207,17 @@ export default function Products() {
           </div>
         )}
       </div>
+
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={cancelDelete}
+        onConfirm={confirmDelete}
+        title="Delete Product"
+        message={`Are you sure you want to delete "${confirmDialog.product?.title || ''}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        isLoading={isDeleting}
+      />
     </section>
   );
 }

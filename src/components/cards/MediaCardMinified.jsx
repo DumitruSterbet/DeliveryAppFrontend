@@ -27,6 +27,7 @@ export default function MediaCardMinified({
   imageDims = 16,
   isMyPlaylist,
   onEdit,
+  onDelete,
 }) {
   const navigate = useNavigate();
   const { playlistId, playlistType } = usePlayerStore();
@@ -169,17 +170,30 @@ export default function MediaCardMinified({
               )}
             </div>
 
-            {type === "product" && onEdit && (
+            {type === "product" && (onEdit || onDelete) && (
               <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <IconButton
-                  name="MdOutlineSettings"
-                  className="w-8 h-8 rounded hover:bg-divider"
-                  iconClassName="text-secondary"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onEdit(item);
-                  }}
-                />
+                {onEdit && (
+                  <IconButton
+                    name="MdOutlineSettings"
+                    className="w-8 h-8 rounded hover:bg-divider"
+                    iconClassName="text-secondary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit(item);
+                    }}
+                  />
+                )}
+                {onDelete && (
+                  <IconButton
+                    name="RiDeleteBin5Line"
+                    className="w-8 h-8 rounded hover:bg-divider"
+                    iconClassName="text-red-500"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(item);
+                    }}
+                  />
+                )}
               </div>
             )}
           </div>
