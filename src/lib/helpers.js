@@ -637,9 +637,16 @@ const getBaseUrl = (endpoint) => {
 export const apiQuery = async ({ endpoint, config, method = "GET" }) => {
   try {
     const baseUrl = getBaseUrl(endpoint);
+    const token = localStorage.getItem("token");
+    
     const options = {
       url: baseUrl,
       method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+        ...config?.headers,
+      },
       ...config,
     };
 

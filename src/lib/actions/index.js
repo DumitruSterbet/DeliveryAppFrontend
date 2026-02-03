@@ -54,6 +54,8 @@ export {
 
 export {
   useCreateProduct,
+  useUpdateProduct,
+  useDeleteProduct,
   useFetchMerchantProducts,
   useFetchProductsByStore,
 } from "./product.action";

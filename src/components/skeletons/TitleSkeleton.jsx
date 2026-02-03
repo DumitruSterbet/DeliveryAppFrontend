@@ -1,7 +1,5 @@
 import { classNames } from "@/lib/utils";
-
 import { Skeleton } from "./Skeleton";
-
 export default function TitleSkeleton({ type }) {
   const gradientClass = "bg-gradient-to-l from-main to-card";
 

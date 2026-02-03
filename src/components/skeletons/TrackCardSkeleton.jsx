@@ -1,5 +1,4 @@
 import { classNames } from "@/lib/utils";
-
 import { Skeleton } from "./Skeleton";
 
 const imageDimsOpt = {
