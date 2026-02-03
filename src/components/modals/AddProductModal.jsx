@@ -5,7 +5,7 @@ import * as yup from "yup";
 
 import { useCreateProduct } from "@/lib/actions/product.action";
 import { useAppModal } from "@/lib/store";
-import { Button, FormInput, FormTextarea, ImageUploader } from "@/components";
+import { Button, FormInput, FormTextarea, ImageUploader, Icon } from "@/components";
 
 // Move schema outside component to prevent recreation on every render
 const schema = yup.object().shape({
@@ -71,74 +71,120 @@ export default function AddProductModal() {
   }, [imageFile, createProduct, close]);
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h2 className="mb-6 text-2xl font-bold text-onNeutralBg">Add New Product</h2>
-      
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <FormInput
-          label="Product Name"
-          placeholder="Enter product name"
-          error={errors.name?.message}
-          {...register("name")}
-        />
+    <div className="max-w-3xl mx-auto">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Product Details Section */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Icon name="MdInfo" size={20} className="text-primary" />
+            <h3 className="text-lg font-semibold text-onNeutralBg">Product Details</h3>
+          </div>
+          
+          <div className="bg-neutralBg/30 rounded-xl p-4 space-y-3 border border-neutralBg">
+            <FormInput
+              label="Product Name"
+              placeholder="e.g., Wireless Headphones, Coffee Table..."
+              error={errors.name?.message}
+              {...register("name")}
+            />
 
-        <FormTextarea
-          label="Description"
-          placeholder="Enter product description"
-          error={errors.description?.message}
-          rows={4}
-          {...register("description")}
-        />
-
-        <FormInput
-          label="Price"
-          type="number"
-          step="0.01"
-          placeholder="0.00"
-          error={errors.price?.message}
-          {...register("price")}
-        />
-
-        <FormInput
-          label="Category"
-          placeholder="e.g., Electronics, Furniture (optional)"
-          error={errors.category?.message}
-          {...register("category")}
-        />
-
-        <div className="w-full">
-          <label className="block mb-2 text-sm font-medium text-onNeutralBg">
-            Product Image
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleImage}
-            ref={imageRef}
-          />
-          <ImageUploader
-            blobUrl={blobUrl}
-            imageRef={imageRef}
-            containerDims="h-48 w-full"
-            borderType="rounded"
-          />
+            <FormTextarea
+              label="Description"
+              placeholder="Describe your product in detail - features, materials, dimensions, etc."
+              error={errors.description?.message}
+              rows={4}
+              {...register("description")}
+            />
+          </div>
         </div>
 
-        <div className="flex gap-4 pt-4">
+        {/* Pricing & Category Section */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Icon name="MdLocalOffer" size={20} className="text-primary" />
+            <h3 className="text-lg font-semibold text-onNeutralBg">Pricing & Category</h3>
+          </div>
+          
+          <div className="bg-neutralBg/30 rounded-xl p-4 space-y-3 border border-neutralBg">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="relative">
+                <FormInput
+                  label="Price"
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  error={errors.price?.message}
+                  {...register("price")}
+                />
+                <span className="absolute left-3 bottom-3 text-secondary text-sm font-semibold">$</span>
+              </div>
+
+              <FormInput
+                label="Category"
+                placeholder="e.g., Electronics, Furniture, Clothing"
+                error={errors.category?.message}
+                {...register("category")}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Image Upload Section */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Icon name="MdImage" size={20} className="text-primary" />
+            <h3 className="text-lg font-semibold text-onNeutralBg">Product Image</h3>
+          </div>
+          
+          <div className="bg-neutralBg/30 rounded-xl p-4 border border-neutralBg">
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImage}
+              ref={imageRef}
+            />
+            <ImageUploader
+              blobUrl={blobUrl}
+              imageRef={imageRef}
+              containerDims="h-64 w-full"
+              borderType="rounded-lg"
+            />
+            <p className="text-xs text-secondary mt-3 text-center">
+              Recommended: Square image, at least 800x800px, PNG or JPG format
+            </p>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-3 pt-4 pb-2">
           <Button
             type="button"
             label="Cancel"
             variant="outlined"
             onClick={close}
-            className="flex-1"
+            className="flex-1 !h-9 !text-sm font-semibold"
           />
           <Button
             type="submit"
-            label={isCreating ? "Creating..." : "Create Product"}
+            label={
+              <span className="flex items-center justify-center gap-1.5">
+                {isCreating ? (
+                  <>
+                    <Icon name="AiOutlineLoading3Quarters" size={16} className="animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Icon name="MdCheckCircle" size={18} />
+                    Create Product
+                  </>
+                )}
+              </span>
+            }
             variant="contained"
             disabled={isCreating}
-            className="flex-1"
+            className="flex-1 !h-9 !text-sm font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
           />
         </div>
       </form>

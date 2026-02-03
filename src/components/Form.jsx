@@ -200,16 +200,16 @@ export const Input = forwardRef(({ label, error, className = "", ...props }, ref
   return (
     <div className="w-full">
       {label && (
-        <label className="block mb-2 text-sm font-medium text-onNeutralBg">
+        <label className="block mb-1.5 text-xs font-medium text-onNeutralBg">
           {label}
         </label>
       )}
       <input
         ref={ref}
-        className={`w-full px-4 py-3 rounded outline-none bg-sidebar text-onNeutralBg border border-divider focus:border-primary ${className}`}
+        className={`w-full px-3 py-2 text-sm rounded outline-none bg-sidebar text-onNeutralBg border border-divider focus:border-primary transition-colors ${className}`}
         {...props}
       />
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );
 });
@@ -221,16 +221,16 @@ export const Textarea = forwardRef(({ label, error, className = "", ...props }, 
   return (
     <div className="w-full">
       {label && (
-        <label className="block mb-2 text-sm font-medium text-onNeutralBg">
+        <label className="block mb-1.5 text-xs font-medium text-onNeutralBg">
           {label}
         </label>
       )}
       <textarea
         ref={ref}
-        className={`w-full px-4 py-3 rounded outline-none bg-sidebar text-onNeutralBg border border-divider focus:border-primary resize-vertical ${className}`}
+        className={`w-full px-3 py-2 text-sm rounded outline-none bg-sidebar text-onNeutralBg border border-divider focus:border-primary resize-vertical transition-colors ${className}`}
         {...props}
       />
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );
 });
