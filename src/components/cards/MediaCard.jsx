@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { usePlayerStore } from "@/lib/store";
+import { usePlayerStore, useShoppingCart, useCurrentUser } from "@/lib/store";
 import { useFetchTracks } from "@/lib/actions";
 import { classNames, getFormatData, truncate, formatPrice } from "@/lib/utils";
 import { usePlayer } from "@/hooks";
@@ -12,6 +12,9 @@ export default function MediaCard({ item, type }) {
   const navigate = useNavigate();
 
   const { playlistId, playlistType } = usePlayerStore();
+  const { addItem, getItemQuantity } = useShoppingCart();
+  const { currentUser } = useCurrentUser();
+  const { user } = currentUser || {};
 
   const { fetchTracks, isSubmitting, getId } = useFetchTracks();
 
@@ -26,6 +29,15 @@ export default function MediaCard({ item, type }) {
     () => ["artist", "playlist", "category"].includes(type),
     [type]
   );
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    if (type === "product" && user) {
+      addItem(item);
+    }
+  };
+
+  const cartQuantity = type === "product" ? getItemQuantity(item.id) : 0;
 
   return (
     <div
@@ -97,26 +109,32 @@ export default function MediaCard({ item, type }) {
                   disabled={isSubmitting}
                   onClick={(e) => {
                     e.stopPropagation();
-                    const callback = (tracks) => {
-                      handleGetPlaylist({
-                        tracklist: getFormatData(tracks, item?.image),
-                        playlistId: item?.id,
-                        playlistType: item?.type,
-                        savePlay: true,
-                        imageAlt: item?.image,
-                      });
-                    };
-                    fetchTracks(
-                      { id: item?.id, type: item?.type, callback },
-                      callback
-                    );
+                    if (type === "product") {
+                      // For products, we don't have tracks, so we can't play them
+                      // Instead, navigate to product page
+                      navigate(`/${type}/${item?.id}`);
+                    } else {
+                      const callback = (tracks) => {
+                        handleGetPlaylist({
+                          tracklist: getFormatData(tracks, item?.image),
+                          playlistId: item?.id,
+                          playlistType: item?.type,
+                          savePlay: true,
+                          imageAlt: item?.image,
+                        });
+                      };
+                      fetchTracks(
+                        { id: item?.id, type: item?.type, callback },
+                        callback
+                      );
+                    }
                   }}
                 >
                   <Icon
                     name={
                       isSubmitting
                         ? "HiOutlineDotsHorizontal"
-                        : "BsFillPlayFill"
+                        : "AiFillEye"
                     }
                     className="!text-white"
                     size={24}
@@ -142,9 +160,20 @@ export default function MediaCard({ item, type }) {
           </p>
         )}
         {type === "product" && item?.price && (
-          <p className="mt-1 text-lg font-bold text-primary">
-            {formatPrice(item.price)}
-          </p>
+          <div className="mt-1 flex items-center justify-between">
+            <p className="text-lg font-bold text-primary">
+              {formatPrice(item.price)}
+            </p>
+            {user && (
+              <button
+                className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white bg-primary hover:bg-primary/90 rounded-full transition-colors"
+                onClick={handleAddToCart}
+              >
+                <Icon name="BsCart3" size={12} />
+                {cartQuantity > 0 ? `In Cart (${cartQuantity})` : "Add to Cart"}
+              </button>
+            )}
+          </div>
         )}
 
         <MetaDetailsMediaCard
