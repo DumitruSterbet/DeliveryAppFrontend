@@ -565,6 +565,12 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/categories`;
   }
 
+  // Check if endpoint is for orders (POST/GET) - route to local API
+  const ordersMatch = endpoint.match(/^api\/orders$/);
+  if (ordersMatch) {
+    return `${API_BASE}/orders`;
+  }
+
   // Check if endpoint is for specific product update (PUT) - route to local API
   const productUpdateMatch = endpoint.match(/^api\/products\/(.+)$/);
   if (productUpdateMatch) {

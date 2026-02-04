@@ -1,6 +1,7 @@
 import { useShoppingCart, useCurrentUser } from "@/lib/store";
 import { Icon, IconButton, Button } from "@/components";
 import { formatPrice, classNames } from "@/lib/utils";
+import { useCreateOrder } from "@/lib/actions";
 
 const CartItem = ({ item }) => {
   const { updateQuantity, removeItem } = useShoppingCart();
@@ -73,14 +74,30 @@ export default function ShoppingCartModal() {
     getItemCount 
   } = useShoppingCart();
   
+  const createOrderMutation = useCreateOrder();
   const totalPrice = getTotalPrice();
   const itemCount = getItemCount();
 
-  const handleCheckout = () => {
-    // TODO: Implement checkout functionality
-    console.log("Proceeding to checkout with items:", items);
-    // For now, just close the cart
-    closeCart();
+  const handleCheckout = async () => {
+    if (!user) {
+      // Redirect to login or show login modal
+      console.log("User must be logged in to checkout");
+      return;
+    }
+
+    try {
+      // Call the API to create the order
+      await createOrderMutation.mutateAsync({ items });
+      
+      // Clear the cart after successful order creation
+      clearCart();
+      
+      // Close the cart modal
+      closeCart();
+    } catch (error) {
+      // Error handling is done in the mutation hook
+      console.error("Checkout failed:", error);
+    }
   };
 
   const handleContinueShopping = () => {
@@ -165,10 +182,10 @@ export default function ShoppingCartModal() {
                     className="flex-1 py-3 text-sm rounded-lg border-2 hover:bg-red-500/10 hover:border-red-500 hover:text-red-500 transition-all"
                   />
                   <Button
-                    label={user ? "Checkout" : "Login"}
+                    label={user ? (createOrderMutation.isPending ? "Processing..." : "Checkout") : "Login"}
                     variant="contained"
                     onClick={handleCheckout}
-                    disabled={!user}
+                    disabled={!user || createOrderMutation.isPending}
                     className="flex-2 py-3 text-sm rounded-lg bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 disabled:opacity-50 transition-all"
                   />
                 </div>
