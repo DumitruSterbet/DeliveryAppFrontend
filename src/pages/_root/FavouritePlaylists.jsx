@@ -23,15 +23,15 @@ export default function FavouritePlaylists() {
           ) : (
             <Sections.MediaSectionMinified
               data={favouritePlaylists}
-              title="Favourite Playlists"
+              title="Favourite Products"
               titleType="large"
-              subTitle="Curate your top playlists effortlessly with Favourite Playlists."
+              subTitle="Curate your top products effortlessly with Favourite Products."
               type="playlist"
               gridNumber={3}
               cardItemNumber={9}
               isLoading={isFavPlaylistDataPending}
               isSuccess={isFavPlaylistDataSuccess}
-              noDataText="No favourite playlist added!"
+              noDataText="No favourite product added!"
             />
           )}
         </>

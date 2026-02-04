@@ -390,7 +390,7 @@ export const useSaveFavouritePlaylist = () => {
           notify({
             title: "Success",
             variant: "success",
-            description: "Favourite playlist added",
+            description: "Favourite product added",
           });
         } catch (error) {
           console.error("Error adding favorite:", error);

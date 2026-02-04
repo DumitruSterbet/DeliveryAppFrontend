@@ -212,9 +212,9 @@ const Sidebar = () => {
       return [
         {
           id: "favourite_playlists",
-          name: "Favourite Playlists",
+          name: "Favourite Products",
           to: "/favourite-playlists",
-          icon: "GiLoveSong",
+          icon: "AiFillHeart",
           tooltip: "hover",
         },
         {
