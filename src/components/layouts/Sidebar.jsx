@@ -167,6 +167,13 @@ const Sidebar = () => {
           tooltip: "hover",
         },
         {
+          id: "categories",
+          name: "Categories",
+          to: "/admin/categories",
+          icon: "PiCategoryDuotone",
+          tooltip: "hover",
+        },
+        {
           id: "analytics",
           name: "Analytics",
           to: "/admin/analytics",

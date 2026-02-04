@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { apiFetchCategories, apiQuery } from "@/lib/helpers";
 
@@ -13,6 +13,69 @@ export const useFetchCategories = () => {
   });
 
   return { isPending, isSuccess, isError, isFetching, error, data };
+};
+
+export const useCreateCategory = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate: createCategory, isPending: isCreating, isError, error, isSuccess } = useMutation({
+    mutationFn: async (categoryData) => {
+      const response = await apiQuery({
+        endpoint: "api/categories",
+        method: "POST",
+        config: {
+          data: categoryData,
+        },
+      });
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
+
+  return { createCategory, isCreating, isError, error, isSuccess };
+};
+
+export const useUpdateCategory = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate: updateCategory, isPending: isUpdating, isError, error, isSuccess } = useMutation({
+    mutationFn: async ({ id, ...categoryData }) => {
+      const response = await apiQuery({
+        endpoint: `api/categories/${id}`,
+        method: "PUT",
+        config: {
+          data: categoryData,
+        },
+      });
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
+
+  return { updateCategory, isUpdating, isError, error, isSuccess };
+};
+
+export const useDeleteCategory = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteCategory, isPending: isDeleting, isError, error, isSuccess } = useMutation({
+    mutationFn: async (categoryId) => {
+      const response = await apiQuery({
+        endpoint: `api/categories/${categoryId}`,
+        method: "DELETE",
+      });
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
+
+  return { deleteCategory, isDeleting, isError, error, isSuccess };
 };
 
 export const useFetchTopCharts = (params) => {

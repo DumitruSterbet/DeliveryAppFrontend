@@ -12,11 +12,16 @@ import {
   Profile,
   Notifications,
   Error,
+  About,
+  Contact,
+  Legal,
+  Policy,
 } from "@/pages/_root";
 
 import { Register, Login, ForgetPass, VerifyForgetPass } from "@/pages/_auth";
 import { RootLayout, AuthLayout } from "@/pages/_layout";
 import { Products, Product } from "@/pages/_merchant";
+import { Categories } from "@/pages/_admin";
 
 export const router = createBrowserRouter([
   {
@@ -67,6 +72,26 @@ export const router = createBrowserRouter([
           {
             path: "/merchant/products/:id",
             element: <Product />,
+          },
+          {
+            path: "/admin/categories",
+            element: <Categories />,
+          },
+          {
+            path: "/about",
+            element: <About />,
+          },
+          {
+            path: "/contact",
+            element: <Contact />,
+          },
+          {
+            path: "/legal",
+            element: <Legal />,
+          },
+          {
+            path: "/policy",
+            element: <Policy />,
           },
           {
             path: "/genre/:id",

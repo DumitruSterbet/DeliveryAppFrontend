@@ -10,3 +10,7 @@ export { default as MyPlaylist } from "./MyPlaylist";
 export { default as Profile } from "./Profile";
 export { default as Notifications } from "./Notifications";
 export { default as Error } from "./Error";
+export { default as About } from "./About";
+export { default as Contact } from "./Contact";
+export { default as Legal } from "./Legal";
+export { default as Policy } from "./Policy";

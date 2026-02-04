@@ -12,10 +12,10 @@ const downloadBtnList = [
 ];
 
 const pageLink = [
-  { name: "About", link: "/" },
-  { name: "Contact", link: "/" },
-  { name: "Legal", link: "/" },
-  { name: "Policy", link: "/" },
+  { name: "About", link: "/about" },
+  { name: "Contact", link: "/contact" },
+  { name: "Legal", link: "/legal" },
+  { name: "Policy", link: "/policy" },
 ];
 
 export default function Footer() {
