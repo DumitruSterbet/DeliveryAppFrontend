@@ -58,7 +58,7 @@ const ModalContent = ({
             <button
               onClick={() => {
                 close();
-                navigate(`/album/${item?.album?.id}`);
+                navigate(`/store/${item?.album?.id}`);
               }}
               className="text-[15px] text-left cursor-pointer hover:underline underline-offset-4"
             >

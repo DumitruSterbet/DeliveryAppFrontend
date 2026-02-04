@@ -35,16 +35,15 @@ export default function Playlist() {
 
       <div className="relative mt-8">
         {isAlbum ? (
-          <Sections.MediaSectionMinified
+          <Sections.MediaSection
             data={products}
             title="Products"
             titleType="large"
             type="product"
-            gridNumber={4}
-            imageDims={28}
+            gridNumber={5}
+            cardItemNumber={products?.length}
             isLoading={playlistDataPending}
             isSuccess={playlistDataSuccess}
-            noDataText="No products available in this album."
           />
         ) : (
           <Sections.TrackSection

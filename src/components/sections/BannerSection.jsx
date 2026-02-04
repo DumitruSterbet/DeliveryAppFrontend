@@ -143,9 +143,9 @@ export default function BannerSection(props) {
                     name={
                       isCurrentPlaylist
                         ? !isPlaying
-                          ? "BsFillPlayFill"
-                          : "BsFillPauseFill"
-                        : "BsFillPlayFill"
+                          ? "AiOutlineEye"
+                          : "AiOutlineEye"
+                        : "AiOutlineEye"
                     }
                     className="w-10 h-10 bg-primary"
                     iconClassName="!text-white"

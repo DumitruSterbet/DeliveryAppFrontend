@@ -20,7 +20,7 @@ export default function AllSearch({
       tracks = tracks?.data;
     } else if (albums?.data?.length) {
       details = albums?.data[0];
-      type = "album";
+      type = "store";
       tracks = albums?.data[0]?.tracks;
     } else if (playlists?.data?.length) {
       details = playlists?.data[0];
