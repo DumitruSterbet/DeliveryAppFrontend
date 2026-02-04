@@ -218,10 +218,10 @@ const Sidebar = () => {
           tooltip: "hover",
         },
         {
-          id: "my_playlists",
-          name: "My Playlists",
-          to: "/my-playlist",
-          icon: "PiPlaylistBold",
+          id: "my_orders",
+          name: "My Orders",
+          to: "/my-orders",
+          icon: "BsBasket",
           tooltip: "hover",
         },
       ];

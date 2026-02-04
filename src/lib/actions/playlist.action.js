@@ -121,7 +121,7 @@ export const useCreateMyPlaylist = () => {
             imageUrl: null,
           });
 
-          navigate(`/my-playlist/${response.data.id}`);
+          navigate(`/my-playlists/${response.data.id}`);
         } catch (error) {
           notify({
             title: "Error",
@@ -253,7 +253,7 @@ export const useRemoveMyPlaylist = () => {
         try {
           await apiDeletePlaylist(id);
 
-          navigate("/my-playlist");
+          navigate("/my-playlists");
 
           notify({
             title: "Success",

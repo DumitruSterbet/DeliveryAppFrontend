@@ -15,7 +15,7 @@ export const navlinks = [
         to: "/liked-songs",
         icon: "MdOutlineFavoriteBorder",
       },
-      { name: "My Playlists", to: "/my-playlist", icon: "PiPlaylistBold" },
+      { name: "Favourite Playlists", to: "/favourite-playlists", icon: "GiLoveSong" },
     ],
   },
   {

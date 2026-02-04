@@ -8,8 +8,7 @@ import {
   FavouritePlaylists,
   Playlist,
   Search,
-  MyPlaylists,
-  MyPlaylist,
+  MyOrders,
   Profile,
   Notifications,
   Error,
@@ -63,14 +62,9 @@ export const router = createBrowserRouter([
           },
 
           {
-            path: "/my-playlist",
-            element: <MyPlaylists />,
-          },
-          {
-            path: "/my-playlist/:id",
-            element: <MyPlaylist />,
-          },
-          {
+            path: "/my-orders",
+            element: <MyOrders />,
+          },          {
             path: "/merchant/products",
             element: <Products />,
           },

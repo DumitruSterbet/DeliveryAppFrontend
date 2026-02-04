@@ -19,13 +19,6 @@ export {
 export {
   useSaveRecentPlayed,
   useFetchRecentPlayed,
-  useFetchMyPlaylists,
-  useCreateMyPlaylist,
-  useFetchMyPlaylist,
-  useEditMyPlaylist,
-  useAddTrackToMyPlaylist,
-  useRemoveTrackFromMyPlaylist,
-  useRemoveMyPlaylist,
   useSaveFavouritePlaylist,
   useFetchFavouritePlaylist,
   useListFavouritePlaylist,

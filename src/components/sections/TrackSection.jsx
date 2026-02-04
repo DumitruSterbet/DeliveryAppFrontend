@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useMemo } from "react";
 
-import { useFetchMyPlaylists } from "@/lib/actions";
 import { usePlayerStore } from "@/lib/store";
 import { classNames, getFormatData } from "@/lib/utils";
 import { usePlayer } from "@/hooks";
@@ -27,8 +26,6 @@ export default function TrackSection({
   isLoading,
   isSuccess,
 }) {
-  useFetchMyPlaylists();
-
   const { playlistId, trackId, trackType } = usePlayerStore() || {};
 
   const { handlePlayPause, handleGetPlaylist, isPlaying } = usePlayer();

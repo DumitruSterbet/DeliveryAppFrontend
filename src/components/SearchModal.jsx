@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { truncate } from "lodash";
 
-import { useAddTrackToMyPlaylist, useFetchSearch } from "@/lib/actions";
+import { useFetchSearch } from "@/lib/actions";
 import { classNames, formatIndexToDouble, formatDuration } from "@/lib/utils";
 import { useDebounce } from "@/hooks";
 
@@ -10,12 +10,7 @@ import { Icon, Title } from "@/components";
 
 const ModalContent = ({
   item,
-  playlistId,
   index,
-  isSubmittingAddToPlaylist,
-  setGetId,
-  addToMyPlaylist,
-  getId,
   close,
 }) => {
   const navigate = useNavigate();
@@ -67,45 +62,17 @@ const ModalContent = ({
           </div>
         </div>
         <div className="top-0 right-0 ml-8">
-          <div className="flex items-end justify-end text-sm text-right group-hover:hidden">
+          <div className="flex items-end justify-end text-sm text-right">
             {formatDuration(item.duration)}
           </div>
-          <button
-            className="hidden p-2 text-sm font-semibold border group-hover:flex rounded-xl"
-            disabled={isSubmittingAddToPlaylist}
-            onClick={() => {
-              setGetId(item?.id);
-
-              addToMyPlaylist({
-                trackD: {
-                  [item?.id]: {
-                    id: item?.id,
-                    type: "track",
-                  },
-                },
-                id: playlistId,
-                imageUrl: item?.album?.cover_medium,
-              });
-            }}
-          >
-            {isSubmittingAddToPlaylist && getId == item?.id
-              ? "Adding ..."
-              : "Add"}
-          </button>
         </div>
       </div>
     </li>
   );
 };
 
-const SearchModal = ({ playlistId, title, close }) => {
-  const {
-    createMyPlaylist: addToMyPlaylist,
-    isCreating: isSubmittingAddToPlaylist,
-  } = useAddTrackToMyPlaylist();
-
+const SearchModal = ({ title, close }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [getId, setGetId] = useState(null);
 
   const searchValue = useDebounce(searchTerm, 2000);
 
@@ -148,16 +115,9 @@ const SearchModal = ({ playlistId, title, close }) => {
               searchResult?.tracks?.data.map((item, index) => (
                 <ModalContent
                   key={index}
-                  {...{
-                    item,
-                    playlistId,
-                    index,
-                    isSubmittingAddToPlaylist,
-                    setGetId,
-                    addToMyPlaylist,
-                    getId,
-                    close,
-                  }}
+                  item={item}
+                  index={index}
+                  close={close}
                 />
               ))
             ) : (

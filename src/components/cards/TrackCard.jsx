@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import {
-  useAddTrackToMyPlaylist,
-  useRemoveTrackFromMyPlaylist,
-  useFetchMyPlaylists,
-} from "@/lib/actions";
 import { useCurrentUser } from "@/lib/store";
 import {
   classNames,
@@ -27,14 +22,6 @@ const MoreButtonDropDown = ({
   const navigate = useNavigate();
 
   const [openAddPlaylist, setAddPlaylist] = useState(false);
-
-  const {
-    createMyPlaylist: addToMyPlaylist,
-    isCreating: isSubmittingAddToPlaylist,
-  } = useAddTrackToMyPlaylist();
-
-  const { deleteTrackFromMyPlaylist } = useRemoveTrackFromMyPlaylist();
-  const { data: myPlaylists } = useFetchMyPlaylists();
 
   return (
     <DropdownMenu
@@ -58,24 +45,6 @@ const MoreButtonDropDown = ({
               </button>
 
               {[
-                ...(myPlaylistId
-                  ? [
-                      {
-                        label: "Remove from this playlist",
-                        onClick: () => {
-                          deleteTrackFromMyPlaylist({
-                            trackD: {
-                              [trackId]: {
-                                id: trackId,
-                                type,
-                              },
-                            },
-                            id: myPlaylistId,
-                          });
-                        },
-                      },
-                    ]
-                  : []),
                 {
                   label: "Go to artist",
                   onClick: () => {
@@ -108,35 +77,11 @@ const MoreButtonDropDown = ({
               <div className="">
                 <button
                   className="flex items-center w-full gap-2 p-2 font-semibold text-left border-b rounded whitespace-nowrap hover:bg-card-hover border-divider"
-                  onClick={() => navigate("/my-playlist")}
+                  onClick={() => navigate("/favourite-playlists")}
                 >
-                  Create a playlist
-                  <Icon name="IoMdAddCircle" size={16} />
+                  View Favourite Playlists
+                  <Icon name="GiLoveSong" size={16} />
                 </button>
-
-                {myPlaylists?.length
-                  ? myPlaylists?.map((item, index) => (
-                      <button
-                        key={index}
-                        className="w-full p-2 text-left rounded hover:bg-card-hover whitespace-nowrap"
-                        disabled={isSubmittingAddToPlaylist}
-                        onClick={() => {
-                          addToMyPlaylist({
-                            trackD: {
-                              [trackId]: {
-                                id: trackId,
-                                type,
-                              },
-                            },
-                            id: item.id,
-                            imageUrl,
-                          });
-                        }}
-                      >
-                        {item.title}
-                      </button>
-                    ))
-                  : null}
               </div>
             </div>
           )}
