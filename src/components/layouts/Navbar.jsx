@@ -75,7 +75,7 @@ const Searchbar = () => {
         >
           {theme?.isMobile && <Icon name="BiSearch" />}
           <input
-            placeholder="Search songs, albums ..."
+            placeholder="Search products, stores ..."
             className="flex-1 w-full h-12 px-4 text-sm bg-transparent rounded outline-0 text-onNeutralBg border-onNeutralBg focus:bg-card"
             value={input}
             onChange={(e) => setInput(e.target.value)}

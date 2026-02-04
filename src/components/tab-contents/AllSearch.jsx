@@ -58,7 +58,7 @@ export default function AllSearch({
 
           <Sections.MediaSection
             data={albums?.data?.slice(0, 3)}
-            title="Albums"
+            title="Stores"
             titleType="medium"
             titleDivider={false}
             showMoreLink={() => setCurrentTab("albums")}
@@ -95,7 +95,7 @@ export default function AllSearch({
               imageDims="16"
               enableTitle
               listDivider={false}
-              titleName="Tracks"
+              titleName="Products"
               titleDivider={false}
               titleType="medium"
               showMoreLink={() => setCurrentTab("tracks")}

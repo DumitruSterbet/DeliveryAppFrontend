@@ -75,7 +75,7 @@ export default function Search() {
               content={content}
               tabs={[
                 { id: "all", name: "All", display: true },
-                { id: "tracks", name: "Tracks", display: tracks?.data?.length },
+                { id: "tracks", name: "Products", display: tracks?.data?.length },
                 {
                   id: "playlists",
                   name: "Playlists",
@@ -86,7 +86,7 @@ export default function Search() {
                   name: "Artists",
                   display: artists?.data?.length,
                 },
-                { id: "albums", name: "Albums", display: albums?.data?.length },
+                { id: "albums", name: "Stores", display: albums?.data?.length },
               ]}
               isLoaded={Boolean(searchResult)}
             />

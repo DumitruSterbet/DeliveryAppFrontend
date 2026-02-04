@@ -129,7 +129,7 @@ const SearchModal = ({ playlistId, title, close }) => {
             <Icon name="BiSearch" />
             <input
               className="w-full h-full text-sm bg-transparent outline-none placeholder:text-secondary text-onNeutralBg"
-              placeholder="Search for songs or tracks ..."
+              placeholder="Search for products ..."
               value={searchTerm || ""}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
