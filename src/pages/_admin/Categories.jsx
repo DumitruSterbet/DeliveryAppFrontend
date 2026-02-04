@@ -1,5 +1,5 @@
 import { useMemo, lazy, useCallback, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { json, Navigate } from "react-router-dom";
 
 import { useCurrentUser, useAppModal } from "@/lib/store";
 import { useFetchCategories, useDeleteCategory } from "@/lib/actions/editorial.action";
@@ -16,6 +16,7 @@ export default function Categories() {
   const { deleteCategory, isDeleting } = useDeleteCategory();
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, category: null });
 
+
   // Fetch categories from backend
   const { data: categories = [], isPending, isSuccess } = useFetchCategories();
 
@@ -24,7 +25,7 @@ export default function Categories() {
     
     return categories.map((category) => {
       const { id, name, description, imageUrl, createdAt } = category;
-      
+      console.log("Processing category:", category);
       return {
         id,
         title: name,
@@ -77,7 +78,7 @@ export default function Categories() {
   }
 
   // Redirect if not an admin
-  if (!user || user.role !== "administrator") {
+  if (!user || user.role !== "Administrator") {
     console.log("Redirecting - user:", user, "role:", user?.role);
     return <Navigate to="/" replace={true} />;
   }
