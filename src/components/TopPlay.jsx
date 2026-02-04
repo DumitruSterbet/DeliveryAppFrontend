@@ -17,7 +17,7 @@ const TopPlay = () => {
 
   const topPickId = useId();
 
-  const randomTopPicks = useMemo(() => {
+  const randomTopProducts = useMemo(() => {
     const topTracks = tracks?.data || [];
     return topTracks?.length
       ? getRandomList(topTracks, 5, 1, topTracks?.length)
@@ -27,15 +27,15 @@ const TopPlay = () => {
   return (
     <section
       className={classNames(
-        "top_picks_section xl:fixed top-0 xl:h-screen xl:w-aside min-w-aside hidden-0 relative main_width xl:left-auto mb-[100px] xl:mb-0 h-auto p-3 sm:p-6 xl:p-0 xl:block right-0 overflow-auto"
+        "top_products_section xl:fixed top-0 xl:h-screen xl:w-aside min-w-aside hidden-0 relative main_width xl:left-auto mb-[100px] xl:mb-0 h-auto p-3 sm:p-6 xl:p-0 xl:block right-0 overflow-auto"
       )}
     >
       <div className="w-full h-full bg-switch">
         
         <div className="sticky top-0 p-4 rounded bg-switch xl:rounded-none">
-          <div className="top_picks_content">
+          <div className="top_products_content">
             <Sections.TrackSection
-              data={randomTopPicks}
+              data={randomTopProducts}
               details={{
                 id: topPickId,
                 type: "chart",
@@ -51,7 +51,7 @@ const TopPlay = () => {
               ]}
               imageDims="11"
               enableTitle
-              titleName="Top Picks"
+              titleName="Top Products"
               titleType="medium"
               titleDivider={false}
               isLoading={chartsDataPending}

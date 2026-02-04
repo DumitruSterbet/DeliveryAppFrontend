@@ -51,7 +51,7 @@ const Title = ({
       </div>
       {desc && (
         <p className="-mt-2 text-sm font-normal tracking-wider text-secondary">
-          {desc || "Top picks for you. Updated daily."}
+          {desc || "Top products for you. Updated daily."}
         </p>
       )}
       {divider && <div className="w-full h-[1px] bg-divider" />}
