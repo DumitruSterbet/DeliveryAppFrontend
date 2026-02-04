@@ -18,12 +18,12 @@ export default function MediaCard({ item, type }) {
   const { handlePlayPause, handleGetPlaylist, isPlaying } = usePlayer();
 
   const isTypeTopClick = useMemo(
-    () => ["genre", "podcast", "artist"].includes(type),
+    () => ["category", "podcast", "artist"].includes(type),
     [type]
   );
 
   const isTitleCentered = useMemo(
-    () => ["artist", "playlist", "genre"].includes(type),
+    () => ["artist", "playlist", "category"].includes(type),
     [type]
   );
 

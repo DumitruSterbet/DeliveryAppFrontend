@@ -7,13 +7,12 @@ export {
   useFetchAllTopProducts,
   useFetchChartBySection,
   useFetchArtist,
-  useFetchGenres,
   useFetchCategories,
+  useFetchCategoryById,
   useFetchSearch,
   useFetchTracks,
   useFetchPlaylists,
-  useFetchGenreById,
-  useFetchGenreBySection,
+  useFetchCategoryBySection,
   fetchMultiplePlaylists,
 } from "./editorial.action";
 

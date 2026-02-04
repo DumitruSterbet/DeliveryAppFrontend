@@ -89,7 +89,7 @@ body {
   height: calc(100vh - var(--nav-height));
 }
 
-.genre_card_height {
+.category_card_height {
   height: calc(100vh - var(--nav-height) - var(--player-height));
 }
 

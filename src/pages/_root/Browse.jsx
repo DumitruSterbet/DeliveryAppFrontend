@@ -2,59 +2,59 @@ import { useEffect, useState } from "react";
 
 import { classNames } from "@/lib/utils";
 import { useAppUtil } from "@/lib/store";
-import { useFetchGenres } from "@/lib/actions";
+import { useFetchCategories } from "@/lib/actions";
 import { Overlay, Icon, Button } from "@/components";
 
-import Genre from "./Genre";
+import Category from "./Category";
 
 export default function Page() {
-  const [getGenre, setGenre] = useState();
+  const [getCategory, setCategory] = useState();
 
-  const { getToggleGenres, toggleGenres } = useAppUtil();
+  const { getToggleCategories, toggleCategories } = useAppUtil();
 
-  const { data: genres } = useFetchGenres();
+  const { data: categories } = useFetchCategories();
 
   useEffect(() => {
-    if (genres) setGenre(genres?.[0]?.id);
-  }, [genres]);
+    if (categories) setCategory(categories?.[0]?.id);
+  }, [categories]);
 
   return (
     <div className="browse_page">
       <div className="flex flex-col gap-y-8">
         {/* Header */}
         <div className="text-center py-4">
-          <h1 className="text-2xl font-bold text-onNeutralBg mb-2">Browse by Genre</h1>
+          <h1 className="text-2xl font-bold text-onNeutralBg mb-2">Browse by Category</h1>
           <p className="text-secondary text-sm max-w-xl mx-auto">
-            Explore different genres and discover new content.
+            Explore different categories and discover new content.
           </p>
         </div>
 
-        {/* Genre Filter */}
+        {/* Category Filter */}
         <div className="bg-card rounded-xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
             <Icon name="RiListIndefinite" size={24} className="text-primary" />
-            <h2 className="text-xl font-semibold text-onNeutralBg">Select Genre</h2>
+            <h2 className="text-xl font-semibold text-onNeutralBg">Select Category</h2>
           </div>
           
           <div className="flex flex-wrap gap-2">
-            {genres &&
-              genres?.map((genre) => (
+            {categories &&
+              categories?.map((category) => (
                 <Button
-                  key={genre.id}
-                  label={genre.name}
-                  variant={getGenre === genre.id ? "contained" : "outlined"}
+                  key={category.id}
+                  label={category.name}
+                  variant={getCategory === category.id ? "contained" : "outlined"}
                   className={classNames(
                     "px-4 py-2 text-sm",
-                    getGenre === genre.id && "bg-primary text-white"
+                    getCategory === category.id && "bg-primary text-white"
                   )}
-                  onClick={() => setGenre(genre.id)}
+                  onClick={() => setCategory(category.id)}
                 />
               ))}
           </div>
         </div>
 
-        {/* Genre Content */}
-        <Genre id={getGenre} />
+        {/* Category Content */}
+        <Category id={getCategory} />
       </div>
     </div>
   );

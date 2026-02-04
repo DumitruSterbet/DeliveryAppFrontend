@@ -209,24 +209,9 @@ export const useFetchAllTopProducts = () => {
   return { isPending, isSuccess, isError, isFetching, error, data };
 };
 
-export const useFetchGenres = () => {
+export const useFetchCategoryById = ({ id }) => {
   const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
-    queryKey: ["genres"],
-    queryFn: async () => {
-      try {
-        const response = await apiFetchCategories();
-        return response?.filter((item) => item.name !== "All");
-      } catch (error) {
-      }
-    },
-  });
-
-  return { isPending, isSuccess, isError, isFetching, error, data };
-};
-
-export const useFetchGenreById = ({ id }) => {
-  const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
-    queryKey: [`genreById_${id}`, { id }],
+    queryKey: [`categoryById_${id}`, { id }],
     queryFn: async () => {
       try {
         if (id) {
@@ -245,16 +230,15 @@ export const useFetchGenreById = ({ id }) => {
   return { isPending, isSuccess, isError, isFetching, error, data };
 };
 
-export const useFetchGenreBySection = ({ id, section }) => {
+export const useFetchChartBySection = ({ id, section }) => {
   const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
-    queryKey: [`genreBySection_${section}_${id}`, { id, section }],
+    queryKey: [`chartBySection_${section}_${id}`, { id, section }],
     queryFn: async () => {
       try {
-        if (id && section) {
+        if (id !== undefined && section) {
           const response = await apiQuery({
-            endpoint: `genre/${id}/${section}`,
+            endpoint: `chart/${id}/${section}`,
           });
-
           return response;
         } else {
           return null;
@@ -310,14 +294,14 @@ export const useFetchArtist = ({ id }) => {
   return { isPending, isSuccess, isError, isFetching, error, data };
 };
 
-export const useFetchChartBySection = ({ id, section }) => {
+export const useFetchCategoryBySection = ({ id, section }) => {
   const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
-    queryKey: [`chartsBySection_${section}_${id}`, { id, section }],
+    queryKey: [`categoryBySection_${section}_${id}`, { id, section }],
     queryFn: async () => {
       try {
         if (id && section) {
           const response = await apiQuery({
-            endpoint: `chart/${id}/${section}`,
+            endpoint: `category/${id}/${section}`,
           });
           return response;
         } else {

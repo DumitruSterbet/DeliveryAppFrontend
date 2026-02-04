@@ -3,7 +3,7 @@ import {
   Discover,
   Browse,
   Shop,
-  Genre,
+  Category,
   Artist,
   FavouritePlaylists,
   Playlist,
@@ -99,8 +99,8 @@ export const router = createBrowserRouter([
             element: <Policy />,
           },
           {
-            path: "/genre/:id",
-            element: <Genre />,
+            path: "/category/:id",
+            element: <Category />,
           },
           {
             path: "/artist/:id",

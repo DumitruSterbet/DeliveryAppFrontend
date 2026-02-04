@@ -17,7 +17,7 @@ export const Genres = ({ genres }) => {
           {genres?.map((genre) => (
             <Link
               key={genre.id}
-              to={`/genre/${genre.id}`}
+              to={`/category/${genre.id}`}
               className="p-2 text-sm rounded-full bg-main"
             >
               {genre.name}

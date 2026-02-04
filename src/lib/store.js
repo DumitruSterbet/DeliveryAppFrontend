@@ -10,13 +10,13 @@ export const useAppUtil = create((set) => ({
   openSwitch: false,
   toggleMenu: false,
   toggleSearch: false,
-  toggleGenres: false,
+  toggleCategories: false,
   searchRef: undefined,
   getTheme: (value) => set(() => ({ theme: value })),
   getOpenSwitch: (value) => set(() => ({ openSwitch: value })),
   getToggleMenu: (value) => set(() => ({ toggleMenu: value })),
   getToggleSearch: (value) => set(() => ({ toggleSearch: value })),
-  getToggleGenres: (value) => set(() => ({ toggleGenres: value })),
+  getToggleCategories: (value) => set(() => ({ toggleCategories: value })),
   getSearchRef: (value) => set(() => ({ searchRef: value })),
 }));
 
