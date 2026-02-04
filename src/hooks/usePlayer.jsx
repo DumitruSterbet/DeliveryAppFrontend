@@ -7,7 +7,6 @@ import useLocalStorage from "use-local-storage";
 import {
   useSaveRecentPlayed,
   useFetchTracks,
-  useUpdateAccountPlayer,
 } from "@/lib/actions";
 import { usePlayerStore, useCurrentUser } from "@/lib/store";
 import { getFormatData } from "@/lib/utils";
@@ -67,8 +66,6 @@ export default function usePlayer() {
     updateTrackIndex,
   } = usePlayerStore();
 
-  const { updatePlayer } = useUpdateAccountPlayer();
-
   const { fetchTracks } = useFetchTracks();
 
   const { saveRecentPlayed } = useSaveRecentPlayed();
@@ -121,12 +118,6 @@ export default function usePlayer() {
     }, [setVolume, vol]);
 
     useEffect(() => {
-      if (userId && groovePlayer) {
-        updatePlayer(groovePlayer);
-      }
-    }, [userId]);
-
-    useEffect(() => {
       if (playlistId && trackIndex) {
         const playerD = {
           trackIndex,
@@ -137,7 +128,6 @@ export default function usePlayer() {
           imageAlt: accountPlayer?.imageAlt || null,
         };
         setGroovePlayer(playerD);
-        updatePlayer(playerD);
       }
     }, [playlistId, tracklist, trackIndex, isLooping, isShuffle]);
 
@@ -253,7 +243,6 @@ export default function usePlayer() {
         isShuffle,
       };
       setGroovePlayer(playerD);
-      updatePlayer(playerD);
     }
   };
 

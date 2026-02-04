@@ -96,7 +96,7 @@ export const useUpdateAccountTheme = () => {
   const [, setThemeLS] = useLocalStorage("groove-theme-config");
 
   const { currentUser } = useCurrentUser();
-  const { userId } = currentUser || {};
+  const { userId, user } = currentUser || {};
 
   const {
     mutate: updateTheme,
@@ -106,13 +106,20 @@ export const useUpdateAccountTheme = () => {
     mutationFn: async (prefs) => {
       if (userId) {
         try {
-          await apiUpdateProfile({ prefs });
+          // Check if prefs actually changed before making API call
+          const currentPrefs = user?.prefs;
+          const hasChanges = JSON.stringify(currentPrefs) !== JSON.stringify(prefs);
           
-          // Update localStorage user data
-          const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-          storedUser.prefs = prefs;
-          localStorage.setItem("user", JSON.stringify(storedUser));       
-          // Update theme localStorage to apply changes immediately
+          if (hasChanges) {
+            await apiUpdateProfile({ prefs });
+            
+            // Update localStorage user data
+            const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+            storedUser.prefs = prefs;
+            localStorage.setItem("user", JSON.stringify(storedUser));
+          }
+          
+          // Always update theme localStorage to apply changes immediately
           setThemeLS(prefs);
         } catch (err) {
           console.error("error", err);
@@ -130,7 +137,7 @@ export const useUpdateAccountPlayer = () => {
   const [, setPlayerLS] = useLocalStorage("groove-player");
 
   const { currentUser } = useCurrentUser();
-  const { userId } = currentUser || {};
+  const { userId, user } = currentUser || {};
 
   const {
     mutate: updatePlayer,
@@ -140,14 +147,20 @@ export const useUpdateAccountPlayer = () => {
     mutationFn: async (player) => {
       if (userId) {
         try {
-          await apiUpdateProfile({ player });
+          // Check if player settings actually changed before making API call
+          const currentPlayer = user?.player;
+          const hasChanges = JSON.stringify(currentPlayer) !== JSON.stringify(player);
           
-          // Update localStorage user data
-          const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-          storedUser.player = player;
-          localStorage.setItem("user", JSON.stringify(storedUser));
+          if (hasChanges) {
+            await apiUpdateProfile({ player });
+            
+            // Update localStorage user data
+            const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+            storedUser.player = player;
+            localStorage.setItem("user", JSON.stringify(storedUser));
+          }
           
-          // Update player localStorage to apply changes immediately
+          // Always update player localStorage to apply changes immediately
           setPlayerLS(player);
         } catch (err) {
           console.error("error", err);

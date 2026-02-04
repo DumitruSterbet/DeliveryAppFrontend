@@ -42,7 +42,6 @@ export {
   useUpdateProfile,
   useUpdatePassword,
   useUpdateAccountTheme,
-  useUpdateAccountPlayer,
 } from "./profile.action";
 
 export {
