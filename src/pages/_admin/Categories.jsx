@@ -1,5 +1,5 @@
 import { useMemo, lazy, useCallback, useState } from "react";
-import { json, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import { useCurrentUser, useAppModal } from "@/lib/store";
 import { useFetchCategories, useDeleteCategory } from "@/lib/actions/editorial.action";
@@ -29,6 +29,8 @@ export default function Categories() {
       return {
         id,
         title: name,
+        name: name, // MediaCardMinified uses item.name
+        image: imageUrl, // MediaCardMinified uses item.image 
         cover_big: imageUrl,
         type: "category",
         release_date: createdAt,

@@ -11,6 +11,7 @@ import { Button, FormInput, FormTextarea, ImageUploader, Icon } from "@/componen
 const schema = yup.object().shape({
   name: yup.string().required("Category name is required").min(2, "Name must be at least 2 characters"),
   description: yup.string().required("Description is required"),
+  type: yup.string().optional(),
 });
 
 export default function EditCategoryModal({ category }) {
@@ -52,16 +53,22 @@ export default function EditCategoryModal({ category }) {
     defaultValues: {
       name: category?.title || "",
       description: category?.desc || "",
+      type: category?.type || "",
     },
   });
 
   const onSubmit = useCallback(async (data) => {
-    // Pass the category id, image file along with form data
+    // Map form data to API structure with lowercase field names
+    const categoryData = {
+      name: data.name,
+      description: data.description,
+      type: data.type || null,
+      picture: imageFile || null,
+      currentImageUrl: category?.cover_big
+    };
     updateCategory({ 
       id: category.id,
-      ...data, 
-      imageFile,
-      currentImageUrl: category?.cover_big 
+      ...categoryData
     });
     close();
   }, [category.id, imageFile, updateCategory, close, category?.cover_big]);
@@ -90,6 +97,13 @@ export default function EditCategoryModal({ category }) {
               error={errors.description?.message}
               rows={3}
               {...register("description")}
+            />
+
+            <FormInput
+              label="Type (Optional)"
+              placeholder="e.g., Physical, Digital, Service..."
+              error={errors.type?.message}
+              {...register("type")}
             />
           </div>
         </div>
@@ -120,24 +134,35 @@ export default function EditCategoryModal({ category }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-neutralBg">
+        <div className="flex gap-3 pt-4 pb-2">
           <Button
             type="button"
+            label="Cancel"
+            variant="outlined"
             onClick={close}
-            variant="secondary"
-            className="px-6 py-2"
-            disabled={isUpdating}
-          >
-            Cancel
-          </Button>
+            className="flex-1 !h-9 !text-sm font-semibold"
+          />
           <Button
             type="submit"
-            className="px-6 py-2"
-            loading={isUpdating}
+            label={
+              <span className="flex items-center justify-center gap-1.5">
+                {isUpdating ? (
+                  <>
+                    <Icon name="AiOutlineLoading3Quarters" size={16} className="animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <Icon name="MdCheckCircle" size={18} />
+                    Update Category
+                  </>
+                )}
+              </span>
+            }
+            variant="contained"
             disabled={isUpdating}
-          >
-            {isUpdating ? "Updating..." : "Update Category"}
-          </Button>
+            className="flex-1 !h-9 !text-sm font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+          />
         </div>
       </form>
     </div>

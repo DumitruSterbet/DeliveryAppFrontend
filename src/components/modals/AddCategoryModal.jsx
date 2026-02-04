@@ -11,12 +11,14 @@ import { Button, FormInput, FormTextarea, ImageUploader, Icon } from "@/componen
 const schema = yup.object().shape({
   name: yup.string().required("Category name is required").min(2, "Name must be at least 2 characters"),
   description: yup.string().required("Description is required"),
+  type: yup.string().optional(),
 });
 
 // Move default values outside component
 const defaultFormValues = {
   name: "",
   description: "",
+  type: "",
 };
 
 export default function AddCategoryModal() {
@@ -61,8 +63,14 @@ export default function AddCategoryModal() {
   });
 
   const onSubmit = useCallback(async (data) => {
-    // Pass the image file along with form data
-    createCategory({ ...data, imageFile });
+    // Map form data to API structure with lowercase field names
+    const categoryData = {
+      name: data.name,
+      description: data.description,
+      type: data.type || null,
+      picture: imageFile || null,
+    };
+    createCategory(categoryData);
     close();
   }, [imageFile, createCategory, close]);
 
@@ -91,6 +99,13 @@ export default function AddCategoryModal() {
               rows={3}
               {...register("description")}
             />
+
+            <FormInput
+              label="Type (Optional)"
+              placeholder="e.g., Physical, Digital, Service..."
+              error={errors.type?.message}
+              {...register("type")}
+            />
           </div>
         </div>
 
@@ -115,24 +130,35 @@ export default function AddCategoryModal() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-neutralBg">
+        <div className="flex gap-3 pt-4 pb-2">
           <Button
             type="button"
+            label="Cancel"
+            variant="outlined"
             onClick={close}
-            variant="secondary"
-            className="px-6 py-2"
-            disabled={isCreating}
-          >
-            Cancel
-          </Button>
+            className="flex-1 !h-9 !text-sm font-semibold"
+          />
           <Button
             type="submit"
-            className="px-6 py-2"
-            loading={isCreating}
+            label={
+              <span className="flex items-center justify-center gap-1.5">
+                {isCreating ? (
+                  <>
+                    <Icon name="AiOutlineLoading3Quarters" size={16} className="animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Icon name="MdCheckCircle" size={18} />
+                    Create Category
+                  </>
+                )}
+              </span>
+            }
+            variant="contained"
             disabled={isCreating}
-          >
-            {isCreating ? "Creating..." : "Create Category"}
-          </Button>
+            className="flex-1 !h-9 !text-sm font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+          />
         </div>
       </form>
     </div>

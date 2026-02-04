@@ -170,7 +170,7 @@ export default function MediaCardMinified({
               )}
             </div>
 
-            {type === "product" && (onEdit || onDelete) && (
+            {(type === "product" || type === "category") && (onEdit || onDelete) && (
               <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 {onEdit && (
                   <IconButton
