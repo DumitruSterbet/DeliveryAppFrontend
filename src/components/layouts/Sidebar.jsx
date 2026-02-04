@@ -95,6 +95,7 @@ const Sidebar = () => {
 
   const getMenuLinks = () => {
     const userRole = user?.role;
+    console.log("User Role in Sidebar:", userRole);
     // Merchant navigation
     if (userRole === "Merchant") {
       return [
@@ -150,7 +151,7 @@ const Sidebar = () => {
     }
 
     // Admin navigation
-    if (userRole === "Admin") {
+    if (userRole === "Administrator") {
       return [
         {
           id: "admin_dashboard",
