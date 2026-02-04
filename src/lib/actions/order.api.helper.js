@@ -21,3 +21,17 @@ export const apiCreateOrder = async ({ items }) => {
     throw error;
   }
 };
+
+export const apiFetchMerchantOrders = async () => {
+  try {
+    const response = await apiQuery({
+      endpoint: 'api/orders/my-orders',
+      method: 'GET',
+    });
+    
+    return response;
+  } catch (error) {
+    console.error("Error in apiFetchMerchantOrders:", error);
+    throw error;
+  }
+};

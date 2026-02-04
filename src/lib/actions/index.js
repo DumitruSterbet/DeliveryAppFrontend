@@ -62,4 +62,5 @@ export {
 
 export {
   useCreateOrder,
+  useFetchMerchantOrders,
 } from "./order.action";

@@ -1,5 +1,5 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiCreateOrder } from "./order.api.helper";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { apiCreateOrder, apiFetchMerchantOrders } from "./order.api.helper";
 import { useNotification } from "@/hooks";
 
 export const useCreateOrder = () => {
@@ -31,5 +31,14 @@ export const useCreateOrder = () => {
         variant: "error"
       });
     },
+  });
+};
+
+export const useFetchMerchantOrders = () => {
+  return useQuery({
+    queryKey: ['merchant-orders'],
+    queryFn: apiFetchMerchantOrders,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3,
   });
 };
