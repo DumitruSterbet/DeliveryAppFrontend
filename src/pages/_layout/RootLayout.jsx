@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 
 import { ScrollProvider } from "@/providers";
 
-import { Modal, Navbar, Sidebar, TrackPlayer, TopPlay } from "@/components";
+import { Modal, Navbar, Sidebar, TrackPlayer, TopPlay, ShoppingCartModal } from "@/components";
 
 const RootLayout = () => {
   return (
@@ -19,6 +19,7 @@ const RootLayout = () => {
               <Outlet />
             </div>
             <Modal />
+            <ShoppingCartModal />
           </main>
           <TopPlay />
         </div>

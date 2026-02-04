@@ -9,7 +9,7 @@ import { classNames, getTimeOfDay } from "@/lib/utils";
 import { useAppUtil, useCurrentUser } from "@/lib/store";
 import { useTheme } from "@/hooks";
 
-import { Button, Icon, DropdownMenu, Overlay } from "@/components";
+import { Button, Icon, DropdownMenu, Overlay, CartIcon } from "@/components";
 import { defaultThemeConfig } from "@/configs";
 import { logo } from "@/constants";
 
@@ -428,6 +428,7 @@ export default function Navbar() {
               {user ? (
                 <>
                   <NotificationButton />
+                  <CartIcon />
                   <UserMenu />
                 </>
               ) : (

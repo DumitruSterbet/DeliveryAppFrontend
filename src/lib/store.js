@@ -181,3 +181,83 @@ export const useCurrentUser = create((set) => ({
   getCurrentUser: (value) => set(() => ({ currentUser: value })),
   getUserProfile: (value) => set(() => ({ userProfile: value })),
 }));
+
+export const useShoppingCart = create((set, get) => ({
+  items: [], // Array of cart items: { productId, name, price, image, quantity, merchantId }
+  isOpen: false,
+  
+  // Add item to cart
+  addItem: (product) => set((state) => {
+    const existingItem = state.items.find(item => item.productId === product.id);
+    
+    if (existingItem) {
+      // Increase quantity if item already exists
+      return {
+        items: state.items.map(item =>
+          item.productId === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      };
+    } else {
+      // Add new item
+      return {
+        items: [...state.items, {
+          productId: product.id,
+          name: product.title || product.name,
+          price: product.price,
+          image: product.image || product.cover_big,
+          quantity: 1,
+          merchantId: product.merchantId || null,
+        }]
+      };
+    }
+  }),
+
+  // Remove item from cart
+  removeItem: (productId) => set((state) => ({
+    items: state.items.filter(item => item.productId !== productId)
+  })),
+
+  // Update item quantity
+  updateQuantity: (productId, quantity) => set((state) => {
+    if (quantity <= 0) {
+      return {
+        items: state.items.filter(item => item.productId !== productId)
+      };
+    }
+    
+    return {
+      items: state.items.map(item =>
+        item.productId === productId
+          ? { ...item, quantity }
+          : item
+      )
+    };
+  }),
+
+  // Clear cart
+  clearCart: () => set(() => ({ items: [] })),
+
+  // Toggle cart modal
+  toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+  openCart: () => set(() => ({ isOpen: true })),
+  closeCart: () => set(() => ({ isOpen: false })),
+
+  // Computed values
+  getItemCount: () => {
+    const { items } = get();
+    return items.reduce((total, item) => total + item.quantity, 0);
+  },
+
+  getTotalPrice: () => {
+    const { items } = get();
+    return items.reduce((total, item) => total + (item.price * item.quantity), 0);
+  },
+
+  getItemQuantity: (productId) => {
+    const { items } = get();
+    const item = items.find(item => item.productId === productId);
+    return item ? item.quantity : 0;
+  },
+}));

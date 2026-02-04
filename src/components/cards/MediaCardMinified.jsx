@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-import { usePlayerStore } from "@/lib/store";
+import { usePlayerStore, useShoppingCart, useCurrentUser } from "@/lib/store";
 import { useFetchTracks } from "@/lib/actions";
 import {
   classNames,
@@ -31,6 +31,9 @@ export default function MediaCardMinified({
 }) {
   const navigate = useNavigate();
   const { playlistId, playlistType } = usePlayerStore();
+  const { addItem, getItemQuantity } = useShoppingCart();
+  const { currentUser } = useCurrentUser();
+  const { user } = currentUser || {};
 
   const { handlePlayPause, handleGetPlaylist, isPlaying } = usePlayer();
 
@@ -38,6 +41,15 @@ export default function MediaCardMinified({
 
   const isCurrentPlaylist =
     playlistId === item.id && item.type.includes(playlistType);
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    if (type === "product" && user) {
+      addItem(item);
+    }
+  };
+
+  const cartQuantity = type === "product" ? getItemQuantity(item.id) : 0;
 
   return (
     <li
@@ -194,6 +206,19 @@ export default function MediaCardMinified({
                     }}
                   />
                 )}
+              </div>
+            )}
+
+            {/* Add to Cart button for products (customer view) */}
+            {type === "product" && !onEdit && !onDelete && user && (
+              <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white bg-primary hover:bg-primary/90 rounded-full transition-colors"
+                  onClick={handleAddToCart}
+                >
+                  <Icon name="BsCart3" size={12} />
+                  {cartQuantity > 0 ? `In Cart (${cartQuantity})` : "Add to Cart"}
+                </button>
               </div>
             )}
           </div>

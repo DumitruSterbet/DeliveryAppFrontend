@@ -12,6 +12,8 @@ import {
   BiChevronsRight,
   BiFont,
   BiPlayCircle,
+  BiPlus,
+  BiMinus,
   BiSearch,
   BiSkipNext,
   BiSkipPrevious,
@@ -24,6 +26,7 @@ import {
   BiVolumeMute,
 } from "react-icons/bi";
 import {
+  BsCart3,
   BsCheckLg,
   BsFillPauseCircleFill,
   BsFillPauseFill,
@@ -129,6 +132,8 @@ const icons = {
   BiChevronsRight,
   BiFont,
   BiPlayCircle,
+  BiPlus,
+  BiMinus,
   BiSearch,
   BiSkipNext,
   BiSkipPrevious,
@@ -139,6 +144,7 @@ const icons = {
   BiVolumeFull,
   BiVolumeLow,
   BiVolumeMute,
+  BsCart3,
   BsFillPauseCircleFill,
   BsFillPauseFill,
   BsFillPlayCircleFill,
