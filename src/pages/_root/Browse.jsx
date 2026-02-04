@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { classNames } from "@/lib/utils";
 import { useAppUtil } from "@/lib/store";
 import { useFetchGenres } from "@/lib/actions";
-import { Overlay } from "@/components";
+import { Overlay, Icon, Button } from "@/components";
 
 import Genre from "./Genre";
 
@@ -20,58 +20,40 @@ export default function Page() {
 
   return (
     <div className="browse_page">
-      <div className="relative gap-6">
-        <Overlay
-          isOpen={toggleGenres}
-          handleIsOpen={getToggleGenres}
-          transparent
-          className="z-[800]"
-        />
-        {getGenre && (
-          <div className="mb-6 genre_dropdown">
-            <button
-              className="gap-2 p-3 text-sm font-semibold border rounded border-primary text-primary flex_justify_between"
-              onClick={() => getToggleGenres(true)}
-            >
-              Select Genre
-            </button>
-          </div>
-        )}
-
-        <div
-          className={classNames(
-            "fixed h-screen z-[900] pt-main-top top-0 w-[200px] transition-all duration-500",
-            toggleGenres ? "left-sidebarHorizontal" : "left-[-500px]"
-          )}
-        >
-          <ul
-            className={classNames(
-              "list-none text-onNeutralBg text-sm bg-main overflow-auto w-full hide_scrollbar duration-500 transition-all shadow-box h-full"
-            )}
-          >
-            {genres &&
-              genres?.map((genre) => (
-                <li
-                  key={genre.id}
-                  className={classNames(
-                    "border-b border-main hover:text-primary",
-                    getGenre == genre?.id && "text-primary"
-                  )}
-                >
-                  <button
-                    className="w-full h-full p-4 font-semibold text-left"
-                    onClick={() => {
-                      setGenre(genre?.id);
-                      getToggleGenres(false);
-                    }}
-                  >
-                    {genre?.name}
-                  </button>
-                </li>
-              ))}
-          </ul>
+      <div className="flex flex-col gap-y-8">
+        {/* Header */}
+        <div className="text-center py-4">
+          <h1 className="text-2xl font-bold text-onNeutralBg mb-2">Browse by Genre</h1>
+          <p className="text-secondary text-sm max-w-xl mx-auto">
+            Explore different genres and discover new content.
+          </p>
         </div>
 
+        {/* Genre Filter */}
+        <div className="bg-card rounded-xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <Icon name="RiListIndefinite" size={24} className="text-primary" />
+            <h2 className="text-xl font-semibold text-onNeutralBg">Select Genre</h2>
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            {genres &&
+              genres?.map((genre) => (
+                <Button
+                  key={genre.id}
+                  label={genre.name}
+                  variant={getGenre === genre.id ? "contained" : "outlined"}
+                  className={classNames(
+                    "px-4 py-2 text-sm",
+                    getGenre === genre.id && "bg-primary text-white"
+                  )}
+                  onClick={() => setGenre(genre.id)}
+                />
+              ))}
+          </div>
+        </div>
+
+        {/* Genre Content */}
         <Genre id={getGenre} />
       </div>
     </div>

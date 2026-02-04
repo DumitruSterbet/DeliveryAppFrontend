@@ -8,6 +8,7 @@ export {
   useFetchChartBySection,
   useFetchArtist,
   useFetchGenres,
+  useFetchCategories,
   useFetchSearch,
   useFetchTracks,
   useFetchPlaylists,

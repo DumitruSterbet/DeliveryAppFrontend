@@ -2,6 +2,7 @@ import { Navigate, createBrowserRouter } from "react-router-dom";
 import {
   Discover,
   Browse,
+  Shop,
   Genre,
   Artist,
   FavouritePlaylists,
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
           {
             path: "/browse",
             element: <Browse />,
+          },
+          {
+            path: "/shop",
+            element: <Shop />,
           },
           {
             path: "/search",

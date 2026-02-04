@@ -200,14 +200,7 @@ const Sidebar = () => {
         icon: "RiListIndefinite",
         tooltip: "hover",
       },
-      {
-        id: "search",
-        name: "Search",
-        to: "/search",
-        icon: "FaSearchengin",
-        refFocus: searchRef,
-        tooltip: "hover",
-      },
+     
     ];
   };
 

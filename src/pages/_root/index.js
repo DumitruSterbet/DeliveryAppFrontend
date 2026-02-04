@@ -1,5 +1,6 @@
 export { default as Discover } from "./Discover";
 export { default as Browse } from "./Browse";
+export { default as Shop } from "./Shop";
 export { default as Genre } from "./Genre";
 export { default as Artist } from "./Artist";
 export { default as Search } from "./Search";
