@@ -46,7 +46,7 @@ const OrderItem = ({ order }) => {
             <Icon name="BsBasket" size={20} className="text-primary" />
           </div>
           <div>
-            <h3 className="font-semibold text-onNeutralBg">Order #{order.id || 'N/A'}</h3>
+            <h3 className="font-semibold text-onNeutralBg">Order #{order.orderNumber || order.id || 'N/A'}</h3>
             <p className="text-secondary text-sm">
               {order.createdAt ? formatDate(order.createdAt) : 'Date not available'}
             </p>
