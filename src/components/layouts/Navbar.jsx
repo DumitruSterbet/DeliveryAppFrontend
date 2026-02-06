@@ -7,6 +7,7 @@ import { isEmpty } from "lodash";
 import { useLogout } from "@/lib/actions";
 import { classNames, getTimeOfDay } from "@/lib/utils";
 import { useAppUtil, useCurrentUser } from "@/lib/store";
+import { useNotificationsStore } from "@/lib/stores/notifications.store";
 import { useTheme } from "@/hooks";
 
 import { Button, Icon, DropdownMenu, Overlay, CartIcon } from "@/components";
@@ -142,16 +143,47 @@ const notificationList = [
 ];
 
 const NotificationButton = () => {
+  const store = useNotificationsStore();
+  const notifications = store?.notifications || [];
+  const unreadCount = store?.unreadCount || 0;
+  const markAsRead = store?.markAsRead || (() => {});
+  
+  // Get the latest few notifications for the dropdown
+  const recentNotifications = notifications.slice(0, 5);
+
+  const handleNotificationClick = (notification) => {
+    if (!notification.isRead) {
+      markAsRead(notification.id);
+    }
+  };
+
+  const formatNotificationTime = (timestamp) => {
+    try {
+      const now = new Date();
+      const notificationTime = new Date(timestamp);
+      const diffInMinutes = Math.floor((now - notificationTime) / (1000 * 60));
+      
+      if (diffInMinutes < 1) return 'Just now';
+      if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+      if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+      return `${Math.floor(diffInMinutes / 1440)}d ago`;
+    } catch (error) {
+      return 'Recently';
+    }
+  };
+
   return (
     <div className="flex items-center h-full">
       <DropdownMenu
         DropdownTrigger={() => (
           <div className="relative group">
-            <div className="absolute flex items-center justify-center w-4 h-4 rounded-full top-2 right-2 bg-primary animate-bounce group-hover:bg-white">
-              <span className="text-xs text-white group-hover:text-primary">
-                {notificationList?.length}
-              </span>
-            </div>
+            {unreadCount > 0 && (
+              <div className="absolute flex items-center justify-center w-4 h-4 rounded-full top-2 right-2 bg-primary animate-bounce group-hover:bg-white">
+                <span className="text-xs text-white group-hover:text-primary">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
+              </div>
+            )}
             <div className="w-12 h-12 transition-colors duration-500 rounded flex_justify_center bg-primary-opacity group-hover:bg-primary">
               <Icon
                 name="IoMdNotificationsOutline"
@@ -164,30 +196,44 @@ const NotificationButton = () => {
           <div className="p-2 space-y-2">
             <div className="flex items-center gap-3 p-3 rounded bg-main">
               <p className="text-base">All notifications</p>
-              <div className="flex items-center justify-center w-4 h-4 rounded-full bg-primary group-hover:bg-white">
-                <span className="text-xs text-white group-hover:text-primary">
-                  {3}
-                </span>
-              </div>
+              {unreadCount > 0 && (
+                <div className="flex items-center justify-center w-4 h-4 rounded-full bg-primary group-hover:bg-white">
+                  <span className="text-xs text-white group-hover:text-primary">
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </span>
+                </div>
+              )}
             </div>
-            <ul className="list-none divide-y divide-divider">
-              {notificationList.map((item) => (
-                <li
-                  className="p-3 rounded cursor-pointer hover:bg-main"
-                  key={item.id}
-                >
-                  <Link className="flex gap-3" to="/notifications">
-                    <Icon name="IoMdNotificationsOutline" />
-                    <div className="flex flex-col flex-1 gap-1">
-                      <p className="text-sm">{item.content}</p>
-                      <span className="text-xs text-secondary">
-                        {item.time}
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {recentNotifications.length > 0 ? (
+              <ul className="list-none divide-y divide-divider">
+                {recentNotifications.map((notification) => (
+                  <li
+                    className={`p-3 rounded cursor-pointer hover:bg-main ${
+                      !notification.isRead ? 'bg-primary-opacity' : ''
+                    }`}
+                    key={notification.id}
+                    onClick={() => handleNotificationClick(notification)}
+                  >
+                    <Link className="flex gap-3" to="/notifications">
+                      <Icon name="IoMdNotificationsOutline" />
+                      <div className="flex flex-col flex-1 gap-1">
+                        <p className="text-sm">{notification.title || notification.message}</p>
+                        <span className="text-xs text-secondary">
+                          {formatNotificationTime(notification.timestamp)}
+                        </span>
+                        {!notification.isRead && (
+                          <div className="w-2 h-2 bg-primary rounded-full" />
+                        )}
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="p-4 text-center text-secondary">
+                <p>No notifications yet</p>
+              </div>
+            )}
 
             <hr className="w-full border-t border-divider" />
 

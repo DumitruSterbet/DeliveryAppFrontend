@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { classNames } from "@/lib/utils";
 import { useAppUtil, useAppModal, useCurrentUser } from "@/lib/store";
+import { useNotificationsStore } from "@/lib/stores/notifications.store";
 import { useLogout } from "@/lib/actions";
 
 import { useTheme } from "@/hooks";
@@ -74,6 +75,8 @@ const Sidebar = () => {
 
   const { logout: signOut } = useLogout();
   const { currentUser } = useCurrentUser();
+  const store = useNotificationsStore();
+  const unreadCount = store?.unreadCount || 0;
 
   const { isLoaded: isLoadedUser, user } = currentUser || {};
 
@@ -281,7 +284,7 @@ const Sidebar = () => {
                   name: "Notifications",
                   to: "/notifications",
                   icon: "IoMdNotificationsOutline",
-                  badgeCount: 3,
+                  badgeCount: unreadCount,
                   tooltip: "hover",
                 },
                 {
