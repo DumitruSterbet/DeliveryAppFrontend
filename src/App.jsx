@@ -12,13 +12,9 @@ function App() {
   useAuthState();
   useGetProfile();
   
-  // Initialize SignalR connection only if enabled via environment variable
+  // Always call useSignalR hook - it will handle the conditional logic internally
   // Set VITE_ENABLE_SIGNALR=true in .env.local to enable
-  const shouldUseSignalR = import.meta.env.VITE_ENABLE_SIGNALR === 'true';
-  
-  if (shouldUseSignalR) {
-    useSignalR();
-  }
+  useSignalR();
 
   return (
     <div className="app">

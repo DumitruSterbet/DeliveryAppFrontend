@@ -5,9 +5,22 @@ import { signalRService } from '@/lib/signalr.service';
 import useNotification from './useNotification';
 
 export const useSignalR = () => {
+  // Check if SignalR is enabled via environment variable
+  const isSignalREnabled = import.meta.env.VITE_ENABLE_SIGNALR === 'true';
+  
   const { currentUser } = useCurrentUser();
-  console.log('useSignalR - currentUser:', currentUser);
   const { user, userId } = currentUser || {};
+  
+  // Only log occasionally to avoid spam
+  const logRef = useRef(0);
+  if (logRef.current % 10 === 0) {
+    console.log('useSignalR - enabled:', isSignalREnabled);
+    console.log('useSignalR - currentUser:', currentUser);
+    console.log('useSignalR - userId:', userId);
+    console.log('useSignalR - user exists:', !!user);
+  }
+  logRef.current++;
+  
   const {
     addNotification,
     setUnreadCount,
@@ -105,7 +118,13 @@ export const useSignalR = () => {
 
   // Disconnect from SignalR
   const disconnect = useCallback(async () => {
+    if (!isConnected && !signalRService.connectionPromise) {
+      console.log('SignalR already disconnected');
+      return;
+    }
+    
     try {
+      console.log('SignalR - Disconnecting...');
       // Remove event listeners
       signalRService.offReceiveNotification(handleReceiveNotification);
       signalRService.offNotificationCountUpdated(handleNotificationCountUpdated);
@@ -117,11 +136,18 @@ export const useSignalR = () => {
     } catch (error) {
       console.error('Error disconnecting SignalR:', error);
     }
-  }, [handleReceiveNotification, handleNotificationCountUpdated, setConnectionStatus]);
+  }, [isConnected, handleReceiveNotification, handleNotificationCountUpdated, setConnectionStatus]);
 
   // Effect to handle connection based on user authentication
   useEffect(() => {
+    if (!isSignalREnabled) {
+      console.log('SignalR disabled via environment variable');
+      return;
+    }
+
+    // Only connect if we have both user and userId
     if (user && userId) {
+      console.log('SignalR - User authenticated, attempting to connect');
       // Add a small delay to ensure all other hooks are initialized
       const timer = setTimeout(() => {
         connect();
@@ -130,20 +156,27 @@ export const useSignalR = () => {
       return () => {
         clearTimeout(timer);
       };
-    } else {
+    } else if (currentUser?.isLoaded && !userId) {
+      // User is loaded but not authenticated - disconnect
+      console.log('SignalR - User not authenticated, disconnecting');
       disconnect();
     }
-  }, [user, userId, connect, disconnect]);
+    // Don't disconnect if currentUser is still loading
+  }, [isSignalREnabled, user, userId, currentUser?.isLoaded, connect, disconnect]);
 
   // Effect to handle token changes
   useEffect(() => {
+    if (!isSignalREnabled) {
+      return;
+    }
+
     const token = getAuthToken();
     if (token && userId && !isConnected && !connectionAttempted.current) {
       connect();
     } else if (!token && isConnected) {
       disconnect();
     }
-  }, [getAuthToken, userId, isConnected, connect, disconnect]);
+  }, [isSignalREnabled, getAuthToken, userId, isConnected, connect, disconnect]);
 
   return {
     isConnected,
