@@ -1,5 +1,5 @@
 import { useShoppingCart } from "@/lib/store";
-import { IconButton } from "@/components";
+import { Icon } from "@/components";
 import { classNames } from "@/lib/utils";
 
 export default function CartIcon({ className }) {
@@ -14,10 +14,9 @@ export default function CartIcon({ className }) {
         className
       )}
     >
-      <IconButton
+      <Icon
         name="BsCart3"
-        className="w-6 h-6"
-        iconClassName="text-onNeutralBg"
+        className="w-6 h-6 text-onNeutralBg"
         size="20"
       />
       {itemCount > 0 && (
