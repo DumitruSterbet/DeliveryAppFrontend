@@ -18,7 +18,8 @@ export const apiFetchNotifications = async (onlyUnread = false) => {
         : undefined,
     });
 
-    return response.data || [];
+    // Extract data from the wrapped response
+    return response.data?.Data || [];
   } catch (error) {
     console.error('Failed to fetch notifications:', error);
     throw error;
@@ -40,7 +41,8 @@ export const apiFetchUnreadCount = async () => {
         : undefined,
     });
 
-    return response.data || 0;
+    // Extract data from the wrapped response
+    return response.data?.Data || 0;
   } catch (error) {
     console.error('Failed to fetch unread count:', error);
     throw error;

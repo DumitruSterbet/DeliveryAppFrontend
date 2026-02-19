@@ -123,24 +123,6 @@ const SignUpButtons = () => {
   );
 };
 
-const notificationList = [
-  {
-    id: "1",
-    content:
-      "Mark Smith reacted to your recent added playlist - My first playlist",
-    time: "1 minute ago",
-  },
-  {
-    id: "2",
-    content: "Sarah Johnson created a new playlist - Downtown Music",
-    time: "1 day ago",
-  },
-  {
-    id: "3",
-    content: "Bob Manuel sent you a private message",
-    time: "1 week ago",
-  },
-];
 
 const NotificationButton = () => {
   const store = useNotificationsStore();

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { json, Link, useLocation, useNavigate } from "react-router-dom";
 
 import { classNames } from "@/lib/utils";
 import { useAppUtil, useAppModal, useCurrentUser } from "@/lib/store";
@@ -76,7 +76,7 @@ const Sidebar = () => {
   const { logout: signOut } = useLogout();
   const { currentUser } = useCurrentUser();
   const store = useNotificationsStore();
-  const unreadCount = store?.unreadCount || 0;
+  const unreadCount = store?.unreadCount;
 
   const { isLoaded: isLoadedUser, user } = currentUser || {};
 
@@ -315,7 +315,7 @@ const Sidebar = () => {
         ],
       },
     ];
-  }, [user]);
+  }, [user, unreadCount, signOut]);
 
   const hideTooltip = (hideFunc) => {
     setToggleNav(false);
@@ -444,7 +444,7 @@ const Sidebar = () => {
                                 {link.badgeCount && (
                                   <div className="flex items-center justify-center w-4 h-4 rounded-full right-2 bg-primary animate-bounce group-hover:bg-white">
                                     <span className="text-xs text-white group-hover:text-primary">
-                                      {3}
+                                      {unreadCount}
                                     </span>
                                   </div>
                                 )}

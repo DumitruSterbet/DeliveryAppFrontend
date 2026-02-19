@@ -17,16 +17,32 @@ export const useNotificationsStore = create(
         set({ isLoading: true });
         try {
           const notifications = await apiFetchNotifications(onlyUnread);
-          const unreadCount = notifications.filter(n => !n.isRead).length;
+          console.log('Fetched notifications from API:', notifications.length, 'items');
+          
+          // Process notifications to ensure consistent structure
+          const processedNotifications = notifications.map(notification => ({
+            id: notification.id,
+            title: notification.title,
+            message: notification.message,
+            type: notification.type,
+            timestamp: notification.createdAt,
+            isRead: notification.isRead,
+            readAt: notification.readAt,
+            relatedEntityId: notification.relatedEntityId,
+            relatedEntityType: notification.relatedEntityType
+          }));
+          
+          const unreadCount = processedNotifications.filter(n => !n.isRead).length;
+          console.log('Processed notifications, unread count:', unreadCount);
           
           set({ 
-            notifications, 
+            notifications: processedNotifications, 
             unreadCount,
             isLoading: false,
             lastFetch: new Date().toISOString()
           });
           
-          return notifications;
+          return processedNotifications;
         } catch (error) {
           console.error('Failed to fetch notifications:', error);
           set({ isLoading: false });
@@ -54,10 +70,15 @@ export const useNotificationsStore = create(
       // Add new notification
       addNotification: (notification) => set((state) => {
         const newNotification = {
-          ...notification,
           id: notification.id || Date.now().toString(),
-          timestamp: notification.timestamp || new Date().toISOString(),
+          title: notification.title,
+          message: notification.message,
+          type: notification.type,
+          timestamp: notification.createdAt || notification.timestamp || new Date().toISOString(),
           isRead: notification.isRead || false,
+          readAt: notification.readAt,
+          relatedEntityId: notification.relatedEntityId,
+          relatedEntityType: notification.relatedEntityType
         };
         
         // Add to the beginning of the array (most recent first)
