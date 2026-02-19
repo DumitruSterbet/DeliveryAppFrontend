@@ -25,16 +25,25 @@ class SignalRService {
   async createConnection(token) {
     try {
       console.log('Creating SignalR connection to:', SIGNALR_CONFIG.HUB_URL);
-      console.log('Using token:', token ? 'Token present' : 'No token');
+      console.log('Using token:', token ? `Token present (${token.substring(0, 20)}...)` : 'No token');
+      
+      if (!token) {
+        throw new Error('No authentication token available for SignalR connection');
+      }
       
       // Create the connection with authentication
       this.connection = new HubConnectionBuilder()
         .withUrl(SIGNALR_CONFIG.HUB_URL, {
-          accessTokenFactory: () => token,
-          withCredentials: SIGNALR_CONFIG.CONNECTION_OPTIONS.withCredentials,
-          // Skip negotiation if in development and having SSL issues
+          accessTokenFactory: () => {
+            console.log('AccessTokenFactory called, returning token');
+            return token;
+          },
+          // Backend has proper CORS configured, so we can use credentials
+          withCredentials: true,
+          // Use negotiation since backend supports it properly
           skipNegotiation: false,
-          transport: import.meta.env.DEV ? undefined : 'WebSockets'
+          // Let SignalR choose best transport
+          transport: undefined
         })
         .withAutomaticReconnect(SIGNALR_CONFIG.RETRY_POLICY)
         .configureLogging(LogLevel[SIGNALR_CONFIG.LOG_LEVEL])

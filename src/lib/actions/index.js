@@ -17,6 +17,13 @@ export {
 } from "./editorial.action";
 
 export {
+  apiFetchNotifications,
+  apiFetchUnreadCount,
+  apiMarkNotificationAsRead,
+  apiMarkAllNotificationsAsRead,
+} from "./notification.action";
+
+export {
   useSaveRecentPlayed,
   useFetchRecentPlayed,
   useSaveFavouritePlaylist,

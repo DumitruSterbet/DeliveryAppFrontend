@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { apiFetchNotifications } from '../actions/notification.action';
 // import { persist } from 'zustand/middleware';
 
 export const useNotificationsStore = create(
@@ -8,6 +9,47 @@ export const useNotificationsStore = create(
       unreadCount: 0,
       isConnected: false,
       lastConnectionError: null,
+      isLoading: false,
+      lastFetch: null,
+
+      // Fetch notifications from API
+      fetchNotifications: async (onlyUnread = false) => {
+        set({ isLoading: true });
+        try {
+          const notifications = await apiFetchNotifications(onlyUnread);
+          const unreadCount = notifications.filter(n => !n.isRead).length;
+          
+          set({ 
+            notifications, 
+            unreadCount,
+            isLoading: false,
+            lastFetch: new Date().toISOString()
+          });
+          
+          return notifications;
+        } catch (error) {
+          console.error('Failed to fetch notifications:', error);
+          set({ isLoading: false });
+          throw error;
+        }
+      },
+
+      // Load notifications initially (call this when app loads)
+      loadNotifications: async () => {
+        const { lastFetch } = get();
+        // Only fetch if we haven't fetched recently (within last 5 minutes)
+        const shouldFetch = !lastFetch || 
+          new Date() - new Date(lastFetch) > 5 * 60 * 1000;
+          
+        if (shouldFetch) {
+          try {
+            await get().fetchNotifications();
+          } catch (error) {
+            // Silently fail initial load, SignalR will provide real-time updates
+            console.log('Initial notification load failed, relying on SignalR');
+          }
+        }
+      },
 
       // Add new notification
       addNotification: (notification) => set((state) => {

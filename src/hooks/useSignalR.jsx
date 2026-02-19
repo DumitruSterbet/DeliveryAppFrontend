@@ -26,7 +26,8 @@ export const useSignalR = () => {
     setUnreadCount,
     setConnectionStatus,
     isConnected,
-    lastConnectionError
+    lastConnectionError,
+    loadNotifications
   } = useNotificationsStore();
   const [notify] = useNotification();
   const connectionAttempted = useRef(false);
@@ -34,7 +35,9 @@ export const useSignalR = () => {
   // Get JWT token from localStorage
   const getAuthToken = useCallback(() => {
     try {
-      return localStorage.getItem('token');
+      const token = localStorage.getItem('token');
+      console.log('Getting auth token from localStorage:', token ? 'Token found' : 'No token');
+      return token;
     } catch (error) {
       console.warn('Failed to get auth token:', error);
       return null;
@@ -96,6 +99,14 @@ export const useSignalR = () => {
       setConnectionStatus(true, null);
       console.log('SignalR connected successfully');
 
+      // Load initial notifications from API
+      try {
+        await loadNotifications();
+        console.log('Initial notifications loaded successfully');
+      } catch (error) {
+        console.log('Failed to load initial notifications, will rely on real-time updates');
+      }
+
     } catch (error) {
       console.error('SignalR connection failed:', error);
       setConnectionStatus(false, error.message || 'Connection failed');
@@ -145,38 +156,34 @@ export const useSignalR = () => {
       return;
     }
 
-    // Only connect if we have both user and userId
-    if (user && userId) {
-      console.log('SignalR - User authenticated, attempting to connect');
-      // Add a small delay to ensure all other hooks are initialized
+    // Check if we have all required data for connection
+    const token = getAuthToken();
+    const hasRequiredData = user && userId && token;
+
+    console.log('SignalR Connection Check:', {
+      hasUser: !!user,
+      hasUserId: !!userId,
+      hasToken: !!token,
+      isConnected,
+      connectionAttempted: connectionAttempted.current
+    });
+
+    if (hasRequiredData && !isConnected && !connectionAttempted.current) {
+      console.log('SignalR - User authenticated with valid token, attempting to connect');
       const timer = setTimeout(() => {
         connect();
-      }, 100);
+      }, 500); // Increased delay to ensure everything is ready
       
       return () => {
         clearTimeout(timer);
       };
-    } else if (currentUser?.isLoaded && !userId) {
-      // User is loaded but not authenticated - disconnect
-      console.log('SignalR - User not authenticated, disconnecting');
+    } else if (currentUser?.isLoaded && (!userId || !token)) {
+      // User is loaded but not properly authenticated - disconnect
+      console.log('SignalR - User not properly authenticated, disconnecting');
       disconnect();
+      connectionAttempted.current = false; // Reset so we can try again when auth is ready
     }
-    // Don't disconnect if currentUser is still loading
-  }, [isSignalREnabled, user, userId, currentUser?.isLoaded, connect, disconnect]);
-
-  // Effect to handle token changes
-  useEffect(() => {
-    if (!isSignalREnabled) {
-      return;
-    }
-
-    const token = getAuthToken();
-    if (token && userId && !isConnected && !connectionAttempted.current) {
-      connect();
-    } else if (!token && isConnected) {
-      disconnect();
-    }
-  }, [isSignalREnabled, getAuthToken, userId, isConnected, connect, disconnect]);
+  }, [isSignalREnabled, user, userId, currentUser?.isLoaded, isConnected, connect, disconnect, getAuthToken]);
 
   return {
     isConnected,

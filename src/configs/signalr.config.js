@@ -7,7 +7,7 @@ export const SIGNALR_CONFIG = {
   
   // Connection options
   CONNECTION_OPTIONS: {
-    withCredentials: true,
+    withCredentials: true, // Backend supports CORS with credentials
     transport: 'WebSockets', // or 'ServerSentEvents', 'LongPolling'
   },
   
