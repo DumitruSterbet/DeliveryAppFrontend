@@ -1,10 +1,20 @@
 import { useState, useMemo } from "react";
-import { useFetchAllTopProducts, useFetchCategories } from "@/lib/actions";
+import { useFetchAllTopProducts, useFetchCategories, useFetchNearestCouriers } from "@/lib/actions";
 import { Sections, Icon, Button } from "@/components";
+import { useCurrentUser } from "@/lib/store";
 import { classNames } from "@/lib/utils";
 
 export default function Shop() {
   const [selectedCategory, setSelectedCategory] = useState("all");
+  
+  const { currentUser } = useCurrentUser();
+  const userRole = currentUser?.user?.role;
+  const isMerchant = userRole === "Merchant";
+  
+  // Debug logging
+  console.log("Current User:", currentUser);
+  console.log("User Role:", userRole);
+  console.log("Is Merchant:", isMerchant);
   
   const {
     data: allTopProducts,
@@ -13,8 +23,23 @@ export default function Shop() {
   } = useFetchAllTopProducts();
 
   const { data: categories = [] } = useFetchCategories();
+  
+  // Fetch nearest couriers (temporarily enabled for debugging)
+  const {
+    data: nearestCouriersData,
+    isPending: isNearestCouriersPending,
+    isError: isNearestCouriersError,
+    refetch: refetchCouriers,
+    error: couriersError,
+  } = useFetchNearestCouriers({
+    enabled: true, // Temporarily always enabled for debugging
+  });
+  
+  console.log("Couriers Data:", nearestCouriersData);
+  console.log("Couriers Error:", isNearestCouriersError, couriersError);
 
   const { topProducts } = allTopProducts || {};
+  const nearestCouriers = nearestCouriersData?.data || [];
 
   const filteredProducts = useMemo(() => {
     if (selectedCategory === "all" || !topProducts?.data) {
@@ -39,6 +64,15 @@ export default function Shop() {
             from our curated collection of quality items.
           </p>
         </div>
+
+        {/* Nearest Couriers Section - Temporarily always shown for debugging */}
+        <Sections.CourierSection
+          couriers={nearestCouriers}
+          isLoading={isNearestCouriersPending}
+          error={isNearestCouriersError && 'Failed to load couriers'}
+          onRefresh={refetchCouriers}
+          className="mb-8"
+        />
 
         {/* Category Filter */}
         <div className="bg-card rounded-xl p-6 shadow-sm">

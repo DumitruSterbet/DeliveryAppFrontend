@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiCreateOrder, apiFetchMerchantOrders } from "./order.api.helper";
+import { apiCreateOrder, apiFetchMerchantOrders, apiFetchNearestCouriers } from "./order.api.helper";
 import { useNotification } from "@/hooks";
 
 export const useCreateOrder = () => {
@@ -40,5 +40,15 @@ export const useFetchMerchantOrders = () => {
     queryFn: apiFetchMerchantOrders,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 3,
+  });
+};
+
+export const useFetchNearestCouriers = ({ enabled = true } = {}) => {
+  return useQuery({
+    queryKey: ['nearest-couriers'],
+    queryFn: () => apiFetchNearestCouriers(),
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    retry: 3,
+    enabled: enabled,
   });
 };

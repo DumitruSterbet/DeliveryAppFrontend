@@ -35,3 +35,17 @@ export const apiFetchMerchantOrders = async () => {
     throw error;
   }
 };
+
+export const apiFetchNearestCouriers = async () => {
+  try {
+    const response = await apiQuery({
+      endpoint: 'api/stores/nearest-couriers',
+      method: 'GET',
+    });
+    
+    return response;
+  } catch (error) {
+    console.error("Error in apiFetchNearestCouriers:", error);
+    throw error;
+  }
+};

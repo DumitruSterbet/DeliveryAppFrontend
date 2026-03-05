@@ -577,6 +577,12 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/orders/my-orders`;
   }
 
+  // Check if endpoint is for nearest couriers - route to local API
+  const nearestCouriersMatch = endpoint.match(/^api\/stores\/nearest-couriers$/);
+  if (nearestCouriersMatch) {
+    return `${API_BASE}/stores/nearest-couriers`;
+  }
+
   // Check if endpoint is for specific product update (PUT) - route to local API
   const productUpdateMatch = endpoint.match(/^api\/products\/(.+)$/);
   if (productUpdateMatch) {

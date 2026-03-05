@@ -123,6 +123,13 @@ const Sidebar = () => {
           icon: "FaSearchengin",
           tooltip: "hover",
         },
+        {
+          id: "shop",
+          name: "Shop",
+          to: "/shop",
+          icon: "MdStorefront",
+          tooltip: "hover",
+        },
       ];
     }
 
@@ -148,6 +155,13 @@ const Sidebar = () => {
           name: "History",
           to: "/courier/history",
           icon: "FaSearchengin",
+          tooltip: "hover",
+        },
+        {
+          id: "shop",
+          name: "Shop",
+          to: "/shop",
+          icon: "MdStorefront",
           tooltip: "hover",
         },
       ];
@@ -201,6 +215,13 @@ const Sidebar = () => {
         name: "Browse",
         to: "/browse",
         icon: "RiListIndefinite",
+        tooltip: "hover",
+      },
+      {
+        id: "shop",
+        name: "Shop",
+        to: "/shop",
+        icon: "MdStorefront",
         tooltip: "hover",
       },
      
