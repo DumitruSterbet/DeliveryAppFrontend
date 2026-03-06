@@ -1,6 +1,7 @@
 export { default as SearchModal } from "./SearchModal";
 
 export { default as Modal } from "./Modal";
+export { default as CourierMap } from "./CourierMapLibre";
 export { default as Form, Input as FormInput, Textarea as FormTextarea } from "./Form";
 export { default as ImageUploader } from "./ImageUploader";
 export { default as MultiSelect } from "./MultiSelect";
