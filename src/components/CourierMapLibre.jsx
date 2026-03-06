@@ -11,6 +11,7 @@ export default function CourierMapLibre({
   className,
   onCourierSelect = null
 }) {
+  const hasAutoCentered = useRef(false);
   const [selectedCourier, setSelectedCourier] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [mapStyle, setMapStyle] = useState("https://tiles.openfreemap.org/styles/liberty");
@@ -34,13 +35,15 @@ export default function CourierMapLibre({
   console.log('CourierMapLibre - couriers length:', couriers.length);
 
   // Calculate map center and update viewState
+  // Rules:
+  // 1) If explicit center is passed, always honor it.
+  // 2) Otherwise, prefer courier location over user/store location.
+  // 3) Auto-center only once to avoid map jumping on every SignalR update.
   useEffect(() => {
     let newCenter = null;
     
     if (center) {
       newCenter = { longitude: center[1], latitude: center[0] };
-    } else if (userLocation) {
-      newCenter = { longitude: userLocation[1], latitude: userLocation[0] };
     } else if (couriers && couriers.length > 0) {
       const firstCourier = couriers[0];
       const lat = parseFloat(firstCourier.lat);
@@ -49,16 +52,24 @@ export default function CourierMapLibre({
       if (!isNaN(lat) && !isNaN(lng)) {
         newCenter = { longitude: lng, latitude: lat };
       }
+    } else if (userLocation) {
+      newCenter = { longitude: userLocation[1], latitude: userLocation[0] };
     }
     
     if (newCenter) {
-      console.log('MapLibre: Setting center to:', newCenter);
-      setViewState(prev => ({
-        ...prev,
-        longitude: newCenter.longitude,
-        latitude: newCenter.latitude,
-        zoom: zoom
-      }));
+      const shouldForceCenter = Boolean(center);
+      const shouldAutoCenterOnce = !hasAutoCentered.current;
+
+      if (shouldForceCenter || shouldAutoCenterOnce) {
+        console.log('MapLibre: Setting center to:', newCenter);
+        setViewState(prev => ({
+          ...prev,
+          longitude: newCenter.longitude,
+          latitude: newCenter.latitude,
+          zoom: zoom
+        }));
+        hasAutoCentered.current = true;
+      }
     }
   }, [center, userLocation, couriers, zoom]);
 

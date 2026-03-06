@@ -1,16 +1,15 @@
-import { useFetchNearestCouriers } from "@/lib/actions";
+import { useCourierTrackingSignalR } from "@/hooks";
 import { Sections } from "@/components";
 
 export default function Shop() {
   const {
-    data: nearestCouriersData,
-    isPending: isNearestCouriersPending,
-    isError: isNearestCouriersError,
-    refetch: refetchCouriers,
-  } = useFetchNearestCouriers({
+    couriers: nearestCouriers,
+    isLoading: isNearestCouriersPending,
+    error: couriersError,
+    refresh: refetchCouriers,
+  } = useCourierTrackingSignalR({
     enabled: true,
   });
-  const nearestCouriers = nearestCouriersData?.data || [];
 
   return (
     <section className="shop_page">
@@ -18,7 +17,7 @@ export default function Shop() {
         <Sections.CourierSection
           couriers={nearestCouriers}
           isLoading={isNearestCouriersPending}
-          error={isNearestCouriersError && 'Failed to load couriers'}
+          error={couriersError || null}
           onRefresh={refetchCouriers}
           className="mb-8"
         />
