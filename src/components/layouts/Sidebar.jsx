@@ -125,9 +125,9 @@ const Sidebar = () => {
         },
         {
           id: "shop",
-          name: "Shop",
+          name: "Couriers Availability",
           to: "/shop",
-          icon: "MdStorefront",
+          icon: "MdLocalShipping",
           tooltip: "hover",
         },
       ];
@@ -159,9 +159,9 @@ const Sidebar = () => {
         },
         {
           id: "shop",
-          name: "Shop",
+          name: "Couriers Availability",
           to: "/shop",
-          icon: "MdStorefront",
+          icon: "MdLocalShipping",
           tooltip: "hover",
         },
       ];
@@ -219,9 +219,9 @@ const Sidebar = () => {
       },
       {
         id: "shop",
-        name: "Shop",
+        name: "Couriers Availability",
         to: "/shop",
-        icon: "MdStorefront",
+        icon: "MdLocalShipping",
         tooltip: "hover",
       },
      
