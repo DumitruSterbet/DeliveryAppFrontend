@@ -622,6 +622,24 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/store-customers/${customerId}`;
   }
 
+  // Check if endpoint is for payouts summary - route to local API
+  const payoutsSummaryMatch = endpoint.match(/^api\/payouts\/summary$/);
+  if (payoutsSummaryMatch) {
+    return `${API_BASE}/payouts/summary`;
+  }
+
+  // Check if endpoint is for payouts history - route to local API
+  const payoutsHistoryMatch = endpoint.match(/^api\/payouts\/history$/);
+  if (payoutsHistoryMatch) {
+    return `${API_BASE}/payouts/history`;
+  }
+
+  // Check if endpoint is for payout request - route to local API
+  const payoutsRequestMatch = endpoint.match(/^api\/payouts\/request$/);
+  if (payoutsRequestMatch) {
+    return `${API_BASE}/payouts/request`;
+  }
+
   // Check if endpoint is for specific product update (PUT) - route to local API
   const productUpdateMatch = endpoint.match(/^api\/products\/(.+)$/);
   if (productUpdateMatch) {
