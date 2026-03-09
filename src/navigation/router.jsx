@@ -39,6 +39,15 @@ import {
   Product,
   Orders,
 } from "@/pages/_merchant";
+import {
+  CourierDashboard,
+  CourierDeliveries,
+  CourierDeliveryDetails,
+  CourierSchedule,
+  CourierHistory,
+  CourierAvailability,
+  CourierEarnings,
+} from "@/pages/_courier";
 import { Categories } from "@/pages/_admin";
 
 export const router = createBrowserRouter([
@@ -150,6 +159,34 @@ export const router = createBrowserRouter([
           {
             path: "/merchant/settings",
             element: <Settings />,
+          },
+          {
+            path: "/courier/dashboard",
+            element: <CourierDashboard />,
+          },
+          {
+            path: "/courier/deliveries",
+            element: <CourierDeliveries />,
+          },
+          {
+            path: "/courier/deliveries/:id",
+            element: <CourierDeliveryDetails />,
+          },
+          {
+            path: "/courier/schedule",
+            element: <CourierSchedule />,
+          },
+          {
+            path: "/courier/history",
+            element: <CourierHistory />,
+          },
+          {
+            path: "/courier/availability",
+            element: <CourierAvailability />,
+          },
+          {
+            path: "/courier/earnings",
+            element: <CourierEarnings />,
           },
           {
             path: "/admin/categories",

@@ -172,6 +172,13 @@ const Sidebar = () => {
     if (userRole === "Courier") {
       return [
         {
+          id: "courier_dashboard",
+          name: "Dashboard",
+          to: "/courier/dashboard",
+          icon: "BiPlayCircle",
+          tooltip: "hover",
+        },
+        {
           id: "deliveries",
           name: "Deliveries",
           to: "/courier/deliveries",
@@ -190,6 +197,20 @@ const Sidebar = () => {
           name: "History",
           to: "/courier/history",
           icon: "FaSearchengin",
+          tooltip: "hover",
+        },
+        {
+          id: "availability",
+          name: "Availability",
+          to: "/courier/availability",
+          icon: "MdLocalShipping",
+          tooltip: "hover",
+        },
+        {
+          id: "earnings",
+          name: "Earnings",
+          to: "/courier/earnings",
+          icon: "BsBasket",
           tooltip: "hover",
         },
       ];
@@ -533,6 +554,68 @@ const Sidebar = () => {
     ];
   };
 
+  const getCourierSections = () => {
+    return [
+      {
+        name: "Operations",
+        subLinks: [
+          {
+            id: "courier_dashboard",
+            name: "Dashboard",
+            to: "/courier/dashboard",
+            icon: "BiPlayCircle",
+            tooltip: "hover",
+          },
+          {
+            id: "deliveries",
+            name: "Deliveries",
+            to: "/courier/deliveries",
+            icon: "BiPlayCircle",
+            tooltip: "hover",
+          },
+          {
+            id: "availability",
+            name: "Availability",
+            to: "/courier/availability",
+            icon: "MdLocalShipping",
+            tooltip: "hover",
+          },
+        ],
+      },
+      {
+        name: "Planning",
+        subLinks: [
+          {
+            id: "schedule",
+            name: "Schedule",
+            to: "/courier/schedule",
+            icon: "RiListIndefinite",
+            tooltip: "hover",
+          },
+        ],
+      },
+      {
+        name: "Performance",
+        subLinks: [
+          {
+            id: "history",
+            name: "History",
+            to: "/courier/history",
+            icon: "FaSearchengin",
+            tooltip: "hover",
+          },
+          {
+            id: "earnings",
+            name: "Earnings",
+            to: "/courier/earnings",
+            icon: "BsBasket",
+            tooltip: "hover",
+          },
+        ],
+      },
+    ];
+  };
+
   const navlinks = useMemo(() => {
     const userRole = user?.role;
     const menuLinks = getMenuLinks();
@@ -587,6 +670,10 @@ const Sidebar = () => {
 
     if (userRole === "Merchant") {
       return [...getMerchantSections(), accountSection];
+    }
+
+    if (userRole === "Courier") {
+      return [...getCourierSections(), accountSection];
     }
 
     if (user && (userRole === "Customer" || !userRole)) {
