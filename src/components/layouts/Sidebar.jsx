@@ -306,9 +306,154 @@ const Sidebar = () => {
     return [];
   };
 
+  const getMerchantSections = () => {
+    return [
+      {
+        name: "Overview",
+        subLinks: [
+          {
+            id: "dashboard",
+            name: "Dashboard",
+            to: "/merchant/dashboard",
+            icon: "BiPlayCircle",
+            tooltip: "hover",
+          },
+        ],
+      },
+      {
+        name: "Catalog",
+        subLinks: [
+          {
+            id: "products",
+            name: "Products",
+            to: "/merchant/products",
+            icon: "RiListIndefinite",
+            tooltip: "hover",
+          },
+          {
+            id: "inventory",
+            name: "Inventory",
+            to: "/merchant/inventory",
+            icon: "RiListIndefinite",
+            tooltip: "hover",
+          },
+          {
+            id: "coupons",
+            name: "Coupons",
+            to: "/merchant/coupons",
+            icon: "PiCategoryDuotone",
+            tooltip: "hover",
+          },
+        ],
+      },
+      {
+        name: "Sales",
+        subLinks: [
+          {
+            id: "orders",
+            name: "Orders",
+            to: "/merchant/orders",
+            icon: "FaSearchengin",
+            tooltip: "hover",
+          },
+          {
+            id: "customers",
+            name: "Customers",
+            to: "/merchant/customers",
+            icon: "BiUser",
+            tooltip: "hover",
+          },
+          {
+            id: "payouts",
+            name: "Payouts",
+            to: "/merchant/payouts",
+            icon: "BsBasket",
+            tooltip: "hover",
+          },
+        ],
+      },
+      {
+        name: "Delivery",
+        subLinks: [
+          {
+            id: "shop",
+            name: "Couriers Availability",
+            to: "/shop",
+            icon: "MdLocalShipping",
+            tooltip: "hover",
+          },
+        ],
+      },
+      {
+        name: "Store",
+        subLinks: [
+          {
+            id: "settings",
+            name: "Settings",
+            to: "/merchant/settings",
+            icon: "BiUser",
+            tooltip: "hover",
+          },
+        ],
+      },
+    ];
+  };
+
   const navlinks = useMemo(() => {
+    const userRole = user?.role;
     const menuLinks = getMenuLinks();
     const libraryLinks = getLibraryLinks();
+    const accountSection = {
+      name: "Account",
+      subLinks: [
+        ...(user
+          ? [
+              {
+                id: "profile",
+                name: "Profile",
+                to: "/profile",
+                icon: "BiUser",
+                tooltip: "hover",
+              },
+              {
+                id: "notifications",
+                name: "Notifications",
+                to: "/notifications",
+                icon: "IoMdNotificationsOutline",
+                badgeCount: unreadCount,
+                tooltip: "hover",
+              },
+              {
+                id: "logout",
+                name: "Logout",
+                to: "/logout",
+                onClick: signOut,
+                icon: "MdLogout",
+                tooltip: "hover",
+              },
+            ]
+          : [
+              {
+                id: "sign_up",
+                name: "Sign Up",
+                to: "/register",
+                icon: "BiUser",
+                tooltip: "hover",
+              },
+              {
+                id: "sign_in",
+                name: "Sign In",
+                to: "/login",
+                icon: "MdLogin",
+                tooltip: "hover",
+              },
+            ]),
+      ],
+    };
+
+    if (userRole === "Merchant") {
+      return [...getMerchantSections(), accountSection];
+    }
 
     return [
       {
@@ -323,53 +468,7 @@ const Sidebar = () => {
             },
           ]
         : []),
-      {
-        name: "Account",
-        subLinks: [
-          ...(user
-            ? [
-                {
-                  id: "profile",
-                  name: "Profile",
-                  to: "/profile",
-                  icon: "BiUser",
-                  tooltip: "hover",
-                },
-                {
-                  id: "notifications",
-                  name: "Notifications",
-                  to: "/notifications",
-                  icon: "IoMdNotificationsOutline",
-                  badgeCount: unreadCount,
-                  tooltip: "hover",
-                },
-                {
-                  id: "logout",
-                  name: "Logout",
-                  to: "/logout",
-                  onClick: signOut,
-                  icon: "MdLogout",
-                  tooltip: "hover",
-                },
-              ]
-            : [
-                {
-                  id: "sign_up",
-                  name: "Sign Up",
-                  to: "/register",
-                  icon: "BiUser",
-                  tooltip: "hover",
-                },
-                {
-                  id: "sign_in",
-                  name: "Sign In",
-                  to: "/login",
-                  icon: "MdLogin",
-                  tooltip: "hover",
-                },
-              ]),
-        ],
-      },
+      accountSection,
     ];
   }, [user, unreadCount, signOut]);
 
