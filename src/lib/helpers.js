@@ -640,6 +640,26 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/payouts/request`;
   }
 
+  // Check if endpoint is for coupons list/create - route to local API
+  const couponsMatch = endpoint.match(/^api\/coupons$/);
+  if (couponsMatch) {
+    return `${API_BASE}/coupons`;
+  }
+
+  // Check if endpoint is for coupon update/delete - route to local API
+  const couponByIdMatch = endpoint.match(/^api\/coupons\/([^/]+)$/);
+  if (couponByIdMatch) {
+    const couponId = couponByIdMatch[1];
+    return `${API_BASE}/coupons/${couponId}`;
+  }
+
+  // Check if endpoint is for coupon toggle - route to local API
+  const couponToggleMatch = endpoint.match(/^api\/coupons\/([^/]+)\/toggle$/);
+  if (couponToggleMatch) {
+    const couponId = couponToggleMatch[1];
+    return `${API_BASE}/coupons/${couponId}/toggle`;
+  }
+
   // Check if endpoint is for specific product update (PUT) - route to local API
   const productUpdateMatch = endpoint.match(/^api\/products\/(.+)$/);
   if (productUpdateMatch) {
