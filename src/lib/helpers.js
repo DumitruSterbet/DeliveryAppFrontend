@@ -583,6 +583,45 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/stores/nearest-couriers`;
   }
 
+  // Check if endpoint is for inventory list - route to local API
+  const inventoryMatch = endpoint.match(/^api\/inventory$/);
+  if (inventoryMatch) {
+    return `${API_BASE}/inventory`;
+  }
+
+  // Check if endpoint is for low stock inventory - route to local API
+  const lowStockInventoryMatch = endpoint.match(/^api\/inventory\/low-stock$/);
+  if (lowStockInventoryMatch) {
+    return `${API_BASE}/inventory/low-stock`;
+  }
+
+  // Check if endpoint is for inventory adjust - route to local API
+  const inventoryAdjustMatch = endpoint.match(/^api\/inventory\/([^/]+)\/adjust$/);
+  if (inventoryAdjustMatch) {
+    const productId = inventoryAdjustMatch[1];
+    return `${API_BASE}/inventory/${productId}/adjust`;
+  }
+
+  // Check if endpoint is for inventory threshold update - route to local API
+  const inventoryThresholdMatch = endpoint.match(/^api\/inventory\/([^/]+)\/threshold$/);
+  if (inventoryThresholdMatch) {
+    const productId = inventoryThresholdMatch[1];
+    return `${API_BASE}/inventory/${productId}/threshold`;
+  }
+
+  // Check if endpoint is for store customers list - route to local API
+  const storeCustomersMatch = endpoint.match(/^api\/store-customers$/);
+  if (storeCustomersMatch) {
+    return `${API_BASE}/store-customers`;
+  }
+
+  // Check if endpoint is for store customer details - route to local API
+  const storeCustomerDetailMatch = endpoint.match(/^api\/store-customers\/([^/]+)$/);
+  if (storeCustomerDetailMatch) {
+    const customerId = storeCustomerDetailMatch[1];
+    return `${API_BASE}/store-customers/${customerId}`;
+  }
+
   // Check if endpoint is for specific product update (PUT) - route to local API
   const productUpdateMatch = endpoint.match(/^api\/products\/(.+)$/);
   if (productUpdateMatch) {
