@@ -192,13 +192,6 @@ const Sidebar = () => {
           icon: "FaSearchengin",
           tooltip: "hover",
         },
-        {
-          id: "shop",
-          name: "Couriers Availability",
-          to: "/shop",
-          icon: "MdLocalShipping",
-          tooltip: "hover",
-        },
       ];
     }
 
@@ -252,14 +245,6 @@ const Sidebar = () => {
         icon: "RiListIndefinite",
         tooltip: "hover",
       },
-      {
-        id: "shop",
-        name: "Couriers Availability",
-        to: "/shop",
-        icon: "MdLocalShipping",
-        tooltip: "hover",
-      },
-     
     ];
   };
 
@@ -281,6 +266,48 @@ const Sidebar = () => {
           name: "My Orders",
           to: "/my-orders",
           icon: "BsBasket",
+          tooltip: "hover",
+        },
+        {
+          id: "cart",
+          name: "Cart",
+          to: "/cart",
+          icon: "BsCart3",
+          tooltip: "hover",
+        },
+        {
+          id: "checkout",
+          name: "Checkout",
+          to: "/checkout",
+          icon: "MdAddShoppingCart",
+          tooltip: "hover",
+        },
+        {
+          id: "order_tracking",
+          name: "Order Tracking",
+          to: "/order-tracking",
+          icon: "MdLocalShipping",
+          tooltip: "hover",
+        },
+        {
+          id: "addresses",
+          name: "Addresses",
+          to: "/addresses",
+          icon: "BiUser",
+          tooltip: "hover",
+        },
+        {
+          id: "payment_methods",
+          name: "Payment Methods",
+          to: "/payment-methods",
+          icon: "BsBasket",
+          tooltip: "hover",
+        },
+        {
+          id: "support",
+          name: "Support",
+          to: "/support",
+          icon: "BiUser",
           tooltip: "hover",
         },
       ];
@@ -399,6 +426,113 @@ const Sidebar = () => {
     ];
   };
 
+  const getCustomerSections = () => {
+    return [
+      {
+        name: "Explore",
+        subLinks: [
+          {
+            id: "discover",
+            name: "Discover",
+            to: "/discover",
+            icon: "BiPlayCircle",
+            tooltip: "hover",
+          },
+          {
+            id: "browse",
+            name: "Browse",
+            to: "/browse",
+            icon: "RiListIndefinite",
+            tooltip: "hover",
+          },
+          {
+            id: "search",
+            name: "Search",
+            to: "/search",
+            icon: "FaSearchengin",
+            tooltip: "hover",
+          },
+        ],
+      },
+      {
+        name: "Shopping",
+        subLinks: [
+          {
+            id: "favourite_playlists",
+            name: "Favourite Products",
+            to: "/favourite-playlists",
+            icon: "AiFillHeart",
+            tooltip: "hover",
+          },
+          {
+            id: "cart",
+            name: "Cart",
+            to: "/cart",
+            icon: "BsCart3",
+            tooltip: "hover",
+          },
+          {
+            id: "checkout",
+            name: "Checkout",
+            to: "/checkout",
+            icon: "MdAddShoppingCart",
+            tooltip: "hover",
+          },
+        ],
+      },
+      {
+        name: "Orders",
+        subLinks: [
+          {
+            id: "my_orders",
+            name: "My Orders",
+            to: "/my-orders",
+            icon: "BsBasket",
+            tooltip: "hover",
+          },
+          {
+            id: "order_tracking",
+            name: "Order Tracking",
+            to: "/order-tracking",
+            icon: "MdLocalShipping",
+            tooltip: "hover",
+          },
+        ],
+      },
+      {
+        name: "Preferences",
+        subLinks: [
+          {
+            id: "addresses",
+            name: "Addresses",
+            to: "/addresses",
+            icon: "BiUser",
+            tooltip: "hover",
+          },
+          {
+            id: "payment_methods",
+            name: "Payment Methods",
+            to: "/payment-methods",
+            icon: "BsBasket",
+            tooltip: "hover",
+          },
+        ],
+      },
+      {
+        name: "Help",
+        subLinks: [
+          {
+            id: "support",
+            name: "Support",
+            to: "/support",
+            icon: "BiUser",
+            tooltip: "hover",
+          },
+        ],
+      },
+    ];
+  };
+
   const navlinks = useMemo(() => {
     const userRole = user?.role;
     const menuLinks = getMenuLinks();
@@ -453,6 +587,10 @@ const Sidebar = () => {
 
     if (userRole === "Merchant") {
       return [...getMerchantSections(), accountSection];
+    }
+
+    if (user && (userRole === "Customer" || !userRole)) {
+      return [...getCustomerSections(), accountSection];
     }
 
     return [

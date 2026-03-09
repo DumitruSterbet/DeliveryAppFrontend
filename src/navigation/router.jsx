@@ -9,6 +9,13 @@ import {
   Playlist,
   Search,
   MyOrders,
+  Cart,
+  Checkout,
+  OrderTracking,
+  ProductDetails,
+  Addresses,
+  PaymentMethods,
+  Support,
   Profile,
   Notifications,
   Error,
@@ -75,6 +82,34 @@ export const router = createBrowserRouter([
           {
             path: "/my-orders",
             element: <MyOrders />,
+          },
+          {
+            path: "/cart",
+            element: <Cart />,
+          },
+          {
+            path: "/checkout",
+            element: <Checkout />,
+          },
+          {
+            path: "/order-tracking",
+            element: <OrderTracking />,
+          },
+          {
+            path: "/product/:id",
+            element: <ProductDetails />,
+          },
+          {
+            path: "/addresses",
+            element: <Addresses />,
+          },
+          {
+            path: "/payment-methods",
+            element: <PaymentMethods />,
+          },
+          {
+            path: "/support",
+            element: <Support />,
           },
           {
             path: "/merchant/dashboard",
