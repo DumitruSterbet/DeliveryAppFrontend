@@ -20,7 +20,7 @@ import {
 
 import { Register, Login, ForgetPass, VerifyForgetPass } from "@/pages/_auth";
 import { RootLayout, AuthLayout } from "@/pages/_layout";
-import { Products, Product, Orders } from "@/pages/_merchant";
+import { Dashboard, Products, Product, Orders } from "@/pages/_merchant";
 import { Categories } from "@/pages/_admin";
 
 export const router = createBrowserRouter([
@@ -64,7 +64,12 @@ export const router = createBrowserRouter([
           {
             path: "/my-orders",
             element: <MyOrders />,
-          },          {
+          },
+          {
+            path: "/merchant/dashboard",
+            element: <Dashboard />,
+          },
+          {
             path: "/merchant/products",
             element: <Products />,
           },
