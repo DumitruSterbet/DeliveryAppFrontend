@@ -1,4 +1,10 @@
 export { default as Dashboard } from "./Dashboard";
+export { default as Inventory } from "./Inventory";
+export { default as Customers } from "./Customers";
+export { default as Payouts } from "./Payouts";
+export { default as Shipping } from "./Shipping";
+export { default as Coupons } from "./Coupons";
+export { default as Settings } from "./Settings";
 export { default as Products } from "./Products";
 export { default as Product } from "./Product";
 export { default as Orders } from "./Orders";
