@@ -625,6 +625,46 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/admin/finance/payouts/${payoutId}/retry`;
   }
 
+  // Check if endpoint is for admin orders summary - route to local API
+  const adminOrdersSummaryMatch = endpoint.match(/^api\/admin\/orders\/summary$/);
+  if (adminOrdersSummaryMatch) {
+    return `${API_BASE}/admin/orders/summary`;
+  }
+
+  // Check if endpoint is for admin orders list - route to local API
+  const adminOrdersMatch = endpoint.match(/^api\/admin\/orders$/);
+  if (adminOrdersMatch) {
+    return `${API_BASE}/admin/orders`;
+  }
+
+  // Check if endpoint is for admin order escalate - route to local API
+  const adminOrderEscalateMatch = endpoint.match(/^api\/admin\/orders\/([^/]+)\/escalate$/);
+  if (adminOrderEscalateMatch) {
+    const orderId = adminOrderEscalateMatch[1];
+    return `${API_BASE}/admin/orders/${orderId}/escalate`;
+  }
+
+  // Check if endpoint is for admin order resolve - route to local API
+  const adminOrderResolveMatch = endpoint.match(/^api\/admin\/orders\/([^/]+)\/resolve$/);
+  if (adminOrderResolveMatch) {
+    const orderId = adminOrderResolveMatch[1];
+    return `${API_BASE}/admin/orders/${orderId}/resolve`;
+  }
+
+  // Check if endpoint is for admin order cancel - route to local API
+  const adminOrderCancelMatch = endpoint.match(/^api\/admin\/orders\/([^/]+)\/cancel$/);
+  if (adminOrderCancelMatch) {
+    const orderId = adminOrderCancelMatch[1];
+    return `${API_BASE}/admin/orders/${orderId}/cancel`;
+  }
+
+  // Check if endpoint is for admin order reassign - route to local API
+  const adminOrderReassignMatch = endpoint.match(/^api\/admin\/orders\/([^/]+)\/reassign$/);
+  if (adminOrderReassignMatch) {
+    const orderId = adminOrderReassignMatch[1];
+    return `${API_BASE}/admin/orders/${orderId}/reassign`;
+  }
+
   // Check if endpoint is for orders (POST/GET) - route to local API
   const ordersMatch = endpoint.match(/^api\/orders$/);
   if (ordersMatch) {
