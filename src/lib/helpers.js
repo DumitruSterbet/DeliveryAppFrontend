@@ -592,6 +592,39 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/admin/users/${userId}/toggle-lock`;
   }
 
+  // Check if endpoint is for admin finance summary - route to local API
+  const adminFinanceSummaryMatch = endpoint.match(/^api\/admin\/finance\/summary$/);
+  if (adminFinanceSummaryMatch) {
+    return `${API_BASE}/admin/finance/summary`;
+  }
+
+  // Check if endpoint is for admin finance payouts list - route to local API
+  const adminFinancePayoutsMatch = endpoint.match(/^api\/admin\/finance\/payouts$/);
+  if (adminFinancePayoutsMatch) {
+    return `${API_BASE}/admin/finance/payouts`;
+  }
+
+  // Check if endpoint is for admin payout approve - route to local API
+  const adminFinancePayoutApproveMatch = endpoint.match(/^api\/admin\/finance\/payouts\/([^/]+)\/approve$/);
+  if (adminFinancePayoutApproveMatch) {
+    const payoutId = adminFinancePayoutApproveMatch[1];
+    return `${API_BASE}/admin/finance/payouts/${payoutId}/approve`;
+  }
+
+  // Check if endpoint is for admin payout reject - route to local API
+  const adminFinancePayoutRejectMatch = endpoint.match(/^api\/admin\/finance\/payouts\/([^/]+)\/reject$/);
+  if (adminFinancePayoutRejectMatch) {
+    const payoutId = adminFinancePayoutRejectMatch[1];
+    return `${API_BASE}/admin/finance/payouts/${payoutId}/reject`;
+  }
+
+  // Check if endpoint is for admin payout retry - route to local API
+  const adminFinancePayoutRetryMatch = endpoint.match(/^api\/admin\/finance\/payouts\/([^/]+)\/retry$/);
+  if (adminFinancePayoutRetryMatch) {
+    const payoutId = adminFinancePayoutRetryMatch[1];
+    return `${API_BASE}/admin/finance/payouts/${payoutId}/retry`;
+  }
+
   // Check if endpoint is for orders (POST/GET) - route to local API
   const ordersMatch = endpoint.match(/^api\/orders$/);
   if (ordersMatch) {
