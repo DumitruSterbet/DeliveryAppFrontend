@@ -90,3 +90,12 @@ export {
   useDeleteCoupon,
   useToggleCoupon,
 } from "./coupon.action";
+
+export {
+  useFetchAdminUsers,
+  useCreateAdminUser,
+  useFetchAdminUserDetails,
+  useDeleteAdminUser,
+  useUpdateAdminUserRole,
+  useToggleAdminUserLock,
+} from "./admin-user.action";

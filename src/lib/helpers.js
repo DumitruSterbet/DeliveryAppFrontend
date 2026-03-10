@@ -565,6 +565,33 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/categories`;
   }
 
+  // Check if endpoint is for admin users list/create - route to local API
+  const adminUsersMatch = endpoint.match(/^api\/admin\/users$/);
+  if (adminUsersMatch) {
+    return `${API_BASE}/admin/users`;
+  }
+
+  // Check if endpoint is for admin user details/delete - route to local API
+  const adminUserByIdMatch = endpoint.match(/^api\/admin\/users\/([^/]+)$/);
+  if (adminUserByIdMatch) {
+    const userId = adminUserByIdMatch[1];
+    return `${API_BASE}/admin/users/${userId}`;
+  }
+
+  // Check if endpoint is for admin user role update - route to local API
+  const adminUserRoleMatch = endpoint.match(/^api\/admin\/users\/([^/]+)\/role$/);
+  if (adminUserRoleMatch) {
+    const userId = adminUserRoleMatch[1];
+    return `${API_BASE}/admin/users/${userId}/role`;
+  }
+
+  // Check if endpoint is for admin user lock toggle - route to local API
+  const adminUserToggleLockMatch = endpoint.match(/^api\/admin\/users\/([^/]+)\/toggle-lock$/);
+  if (adminUserToggleLockMatch) {
+    const userId = adminUserToggleLockMatch[1];
+    return `${API_BASE}/admin/users/${userId}/toggle-lock`;
+  }
+
   // Check if endpoint is for orders (POST/GET) - route to local API
   const ordersMatch = endpoint.match(/^api\/orders$/);
   if (ordersMatch) {
