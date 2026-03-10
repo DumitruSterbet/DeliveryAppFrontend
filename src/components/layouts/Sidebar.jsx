@@ -230,7 +230,35 @@ const Sidebar = () => {
           id: "users",
           name: "Users",
           to: "/admin/users",
+          icon: "BiUser",
+          tooltip: "hover",
+        },
+        {
+          id: "merchants",
+          name: "Merchants",
+          to: "/admin/merchants",
           icon: "RiListIndefinite",
+          tooltip: "hover",
+        },
+        {
+          id: "couriers",
+          name: "Couriers",
+          to: "/admin/couriers",
+          icon: "BiUserVoice",
+          tooltip: "hover",
+        },
+        {
+          id: "orders",
+          name: "Orders",
+          to: "/admin/orders",
+          icon: "BsCart3",
+          tooltip: "hover",
+        },
+        {
+          id: "finance",
+          name: "Finance",
+          to: "/admin/finance",
+          icon: "MdLocalOffer",
           tooltip: "hover",
         },
         {
@@ -616,6 +644,82 @@ const Sidebar = () => {
     ];
   };
 
+  const getAdminSections = () => {
+    return [
+      {
+        name: "Overview",
+        subLinks: [
+          {
+            id: "admin_dashboard",
+            name: "Admin Dashboard",
+            to: "/admin/dashboard",
+            icon: "BiPlayCircle",
+            tooltip: "hover",
+          },
+          {
+            id: "analytics",
+            name: "Analytics",
+            to: "/admin/analytics",
+            icon: "FaSearchengin",
+            tooltip: "hover",
+          },
+        ],
+      },
+      {
+        name: "Management",
+        subLinks: [
+          {
+            id: "users",
+            name: "Users",
+            to: "/admin/users",
+            icon: "BiUser",
+            tooltip: "hover",
+          },
+          {
+            id: "merchants",
+            name: "Merchants",
+            to: "/admin/merchants",
+            icon: "RiListIndefinite",
+            tooltip: "hover",
+          },
+          {
+            id: "couriers",
+            name: "Couriers",
+            to: "/admin/couriers",
+            icon: "BiUserVoice",
+            tooltip: "hover",
+          },
+        ],
+      },
+      {
+        name: "Operations",
+        subLinks: [
+          {
+            id: "orders",
+            name: "Orders",
+            to: "/admin/orders",
+            icon: "BsCart3",
+            tooltip: "hover",
+          },
+          {
+            id: "finance",
+            name: "Finance",
+            to: "/admin/finance",
+            icon: "MdLocalOffer",
+            tooltip: "hover",
+          },
+          {
+            id: "categories",
+            name: "Categories",
+            to: "/admin/categories",
+            icon: "PiCategoryDuotone",
+            tooltip: "hover",
+          },
+        ],
+      },
+    ];
+  };
+
   const navlinks = useMemo(() => {
     const userRole = user?.role;
     const menuLinks = getMenuLinks();
@@ -674,6 +778,10 @@ const Sidebar = () => {
 
     if (userRole === "Courier") {
       return [...getCourierSections(), accountSection];
+    }
+
+    if (userRole === "Administrator") {
+      return [...getAdminSections(), accountSection];
     }
 
     if (user && (userRole === "Customer" || !userRole)) {

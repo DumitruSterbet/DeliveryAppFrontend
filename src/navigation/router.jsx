@@ -48,7 +48,16 @@ import {
   CourierAvailability,
   CourierEarnings,
 } from "@/pages/_courier";
-import { Categories } from "@/pages/_admin";
+import {
+  Dashboard as AdminDashboard,
+  Users as AdminUsers,
+  Merchants as AdminMerchants,
+  Couriers as AdminCouriers,
+  Orders as AdminOrders,
+  Finance as AdminFinance,
+  Analytics as AdminAnalytics,
+  Categories,
+} from "@/pages/_admin";
 
 export const router = createBrowserRouter([
   {
@@ -187,6 +196,38 @@ export const router = createBrowserRouter([
           {
             path: "/courier/earnings",
             element: <CourierEarnings />,
+          },
+          {
+            path: "/admin",
+            element: <Navigate to="/admin/dashboard" replace />,
+          },
+          {
+            path: "/admin/dashboard",
+            element: <AdminDashboard />,
+          },
+          {
+            path: "/admin/users",
+            element: <AdminUsers />,
+          },
+          {
+            path: "/admin/merchants",
+            element: <AdminMerchants />,
+          },
+          {
+            path: "/admin/couriers",
+            element: <AdminCouriers />,
+          },
+          {
+            path: "/admin/orders",
+            element: <AdminOrders />,
+          },
+          {
+            path: "/admin/finance",
+            element: <AdminFinance />,
+          },
+          {
+            path: "/admin/analytics",
+            element: <AdminAnalytics />,
           },
           {
             path: "/admin/categories",
