@@ -719,6 +719,19 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/courier/history`;
   }
 
+  // Check if endpoint is for courier deliveries list - route to local API
+  const courierDeliveriesMatch = endpoint.match(/^api\/(courier|couriers)\/deliveries$/);
+  if (courierDeliveriesMatch) {
+    return `${API_BASE}/courier/deliveries`;
+  }
+
+  // Check if endpoint is for courier delivery details - route to local API
+  const courierDeliveryByIdMatch = endpoint.match(/^api\/(courier|couriers)\/deliveries\/([^/]+)$/);
+  if (courierDeliveryByIdMatch) {
+    const deliveryId = courierDeliveryByIdMatch[2];
+    return `${API_BASE}/courier/deliveries/${deliveryId}`;
+  }
+
   // Check if endpoint is for inventory list - route to local API
   const inventoryMatch = endpoint.match(/^api\/inventory$/);
   if (inventoryMatch) {
