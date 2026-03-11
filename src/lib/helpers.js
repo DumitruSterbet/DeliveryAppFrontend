@@ -695,6 +695,30 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/stores/nearest-couriers`;
   }
 
+  // Check if endpoint is for courier schedule - route to local API
+  const courierScheduleMatch = endpoint.match(/^api\/(courier|couriers)\/schedule$/);
+  if (courierScheduleMatch) {
+    return `${API_BASE}/courier/schedule`;
+  }
+
+  // Check if endpoint is for courier availability - route to local API
+  const courierAvailabilityMatch = endpoint.match(/^api\/(courier|couriers)\/availability$/);
+  if (courierAvailabilityMatch) {
+    return `${API_BASE}/courier/availability`;
+  }
+
+  // Check if endpoint is for courier earnings - route to local API
+  const courierEarningsMatch = endpoint.match(/^api\/(courier|couriers)\/earnings$/);
+  if (courierEarningsMatch) {
+    return `${API_BASE}/courier/earnings`;
+  }
+
+  // Check if endpoint is for courier history - route to local API
+  const courierHistoryMatch = endpoint.match(/^api\/(courier|couriers)\/history$/);
+  if (courierHistoryMatch) {
+    return `${API_BASE}/courier/history`;
+  }
+
   // Check if endpoint is for inventory list - route to local API
   const inventoryMatch = endpoint.match(/^api\/inventory$/);
   if (inventoryMatch) {

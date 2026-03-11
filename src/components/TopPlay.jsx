@@ -1,11 +1,20 @@
 import { useId, useMemo } from "react";
 
 import { getRandomList, classNames } from "@/lib/utils";
+import { useCurrentUser } from "@/lib/store";
 import { useFetchChartBySection } from "@/lib/actions";
 
 import { Sections, Footer } from "@/components";
 
 const TopPlay = () => {
+  const { currentUser } = useCurrentUser();
+  const { isLoaded, user } = currentUser || {};
+  const role = user?.role;
+
+  const canViewTopProducts = isLoaded
+    ? !user || role === "Customer" || !role
+    : false;
+
   const {
     data: tracks,
     isPending: chartsDataPending,
@@ -13,6 +22,7 @@ const TopPlay = () => {
   } = useFetchChartBySection({
     id: "0",
     section: "tracks",
+    enabled: canViewTopProducts,
   });
 
   const topPickId = useId();
@@ -23,6 +33,10 @@ const TopPlay = () => {
       ? getRandomList(topTracks, 5, 1, topTracks?.length)
       : [];
   }, [tracks?.data]);
+
+  if (!canViewTopProducts) {
+    return null;
+  }
 
   return (
     <section

@@ -230,9 +230,10 @@ export const useFetchCategoryById = ({ id }) => {
   return { isPending, isSuccess, isError, isFetching, error, data };
 };
 
-export const useFetchChartBySection = ({ id, section }) => {
+export const useFetchChartBySection = ({ id, section, enabled = true }) => {
   const { isPending, isSuccess, isError, isFetching, error, data } = useQuery({
     queryKey: [`chartBySection_${section}_${id}`, { id, section }],
+    enabled,
     queryFn: async () => {
       try {
         if (id !== undefined && section) {
