@@ -116,3 +116,7 @@ export {
   useCancelAdminOrder,
   useReassignAdminOrder,
 } from "./admin-order.action";
+
+export { useFetchAdminAnalytics } from "./admin-analytics.action";
+
+export { useFetchAdminDashboard } from "./admin-dashboard.action";

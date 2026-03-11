@@ -665,6 +665,18 @@ const getBaseUrl = (endpoint) => {
     return `${API_BASE}/admin/orders/${orderId}/reassign`;
   }
 
+  // Check if endpoint is for admin analytics - route to local API
+  const adminAnalyticsMatch = endpoint.match(/^api\/admin\/analytics$/);
+  if (adminAnalyticsMatch) {
+    return `${API_BASE}/admin/analytics`;
+  }
+
+  // Check if endpoint is for admin dashboard - route to local API
+  const adminDashboardMatch = endpoint.match(/^api\/admin\/dashboard$/);
+  if (adminDashboardMatch) {
+    return `${API_BASE}/admin/dashboard`;
+  }
+
   // Check if endpoint is for orders (POST/GET) - route to local API
   const ordersMatch = endpoint.match(/^api\/orders$/);
   if (ordersMatch) {
